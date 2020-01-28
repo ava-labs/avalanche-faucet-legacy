@@ -1,29 +1,26 @@
 <template>
-    <div>
-        <v-container>
-            <v-card class="card" >
-<!--                <h1><fa icon="tint"></fa></h1>-->
-                <img class="gif" src="@/assets/drop.gif">
-                <h1>The AVA Faucet</h1>
-                <div v-show="state==='form'">
+    <v-container fill-height >
+        <v-row justify="center" align="center">
+            <v-card class="card" :loading="isAjax">
+                <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
+                <v-card-title>
+                    The AVA Faucet
+                </v-card-title>
+                <v-card-text v-show="state==='form'">
                     <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>
                     <div ref="captcha" class="captcha"></div>
                     <div class="errors">
                         <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
                     </div>
-                    <v-btn @click="onSubmit" block :loading="isAjax">REQUEST 0.25 ATH</v-btn>
-                </div>
-                <div v-show="state==='success'">
+                    <v-btn @click="onSubmit" block :loading="isAjax" depressed>REQUEST 100 $AVA</v-btn>
+                </v-card-text>
+                <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
                     <v-btn @click="clear" block>Start again</v-btn>
-                </div>
+                </v-card-text>
             </v-card>
-        </v-container>
-
-        <div >
-
-        </div>
-    </div>
+        </v-row>
+    </v-container>
 </template>
 <script>
     import axios from '../axios';
@@ -102,8 +99,9 @@
 <style scoped>
     .card{
         margin: auto;
-        padding: 30px;
+        /*padding: 30px;*/
         width: 420px;
+        background-color: #fff !important;
     }
 
     .captcha{
@@ -121,6 +119,9 @@
         color: #f44;
     }
 
+    .v-image{
+        /*margin: 20px auto;*/
+    }
     .v-btn{
         margin-top: 20px;
     }

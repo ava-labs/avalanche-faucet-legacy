@@ -27,6 +27,8 @@ let bintools = slopes.BinTools.getInstance();
 let ava = new slopes.Slopes(AVA_IP, AVA_PORT, AVA_PROTOCOL);
 let avm = ava.AVM();
 
+console.log(ava.AVM)
+
 let myKeychain = avm.keyChain();
 
 let keypair = null;
