@@ -1,12 +1,27 @@
 <template>
     <div>
-        <div class="card">
-            <h1>The AVA Faucet</h1>
-            <input type="text" v-model="address">
-            <div ref="captcha"></div>
-            <p>Please use https://ava.network:21015/ext/evm/rpc RPC to connect to the Athereum testnet.</p>
-            <button @click="requestToken">REQUEST 0.25 ATH</button>
-            <v-btn>yo</v-btn>
+        <v-container>
+            <v-card class="card" >
+<!--                <h1><fa icon="tint"></fa></h1>-->
+                <img class="gif" src="@/assets/drop.gif">
+                <h1>The AVA Faucet</h1>
+                <div v-show="state==='form'">
+                    <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>
+                    <div ref="captcha" class="captcha"></div>
+                    <div class="errors">
+                        <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
+                    </div>
+                    <v-btn @click="onSubmit" block :loading="isAjax">REQUEST 0.25 ATH</v-btn>
+                </div>
+                <div v-show="state==='success'">
+                    <p>Transfer successfull.</p>
+                    <v-btn @click="clear" block>Start again</v-btn>
+                </div>
+            </v-card>
+        </v-container>
+
+        <div >
+
         </div>
     </div>
 </template>
@@ -16,28 +31,55 @@
     export default {
         data(){
             return{
+                errAddress: false,
+                isAjax: false,
                 address: '',
                 errors: [],
+                captchaResponse: '',
+                state: 'form', // form || success
             }
         },
         methods:{
+            clear(){
+                this.address = "";
+                this.captchaResponse = "";
+                window.grecaptcha.reset();
+                this.state = "form";
+            },
+            onSubmit(){
+                this.errors = [];
+                this.errAddress = false;
+
+                this.captchaResponse = window.grecaptcha.getResponse();
+
+                if(!this.address){
+                    this.errors.push("Please enter a valid address.")
+                    this.errAddress = true;
+                }
+                if(!this.captchaResponse){
+                    this.errors.push("You must fill the captcha.")
+                }
+
+                if(this.errors.length===0){
+                    this.requestToken();
+                }
+            },
             onresponse(res){
+                this.isAjax = false;
                 let data = res.data;
                 if(data.status === 'success'){
-                    alert("GOT THEM COINS");
+                    this.state = 'success';
                 }else{
                     console.log(data);
                 }
                 window.grecaptcha.reset();
             },
             requestToken(){
-                let captchaResponse = window.grecaptcha.getResponse();
-                if(captchaResponse){
-                    axios.post('/token',{
-                        "g-recaptcha-response": captchaResponse,
-                        "address": this.address
-                    }).then(this.onresponse);
-                }
+                this.isAjax = true;
+                axios.post('/token',{
+                    "g-recaptcha-response": this.captchaResponse,
+                    "address": this.address
+                }).then(this.onresponse);
             }
         },
         mounted() {
@@ -52,21 +94,39 @@
                 )
             }
         },
+        destroyed() {
+            window.grecaptcha.reset();
+        }
     }
 </script>
 <style scoped>
     .card{
         margin: auto;
-        background-color: #FFF;
-        /*width: 320px;*/
-        width: min-content;
-        max-width: 100%;
-        border: 1px solid #f2f2f2;
         padding: 30px;
-        border-radius: 5px;
+        width: 420px;
     }
 
-    .card p{
+    .captcha{
+        margin: 20px auto;
+    }
+
+    .errors{
+        margin: 5px 0px;
+    }
+
+    .errors p{
+        font-size: 12px;
+        margin: 0;
         text-align: left;
+        color: #f44;
+    }
+
+    .v-btn{
+        margin-top: 20px;
+    }
+
+    .gif{
+        height: 120px;
+        object-fit: fill;
     }
 </style>

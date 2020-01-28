@@ -1,5 +1,7 @@
 <template>
-    <v-app>
+    <v-app :style="{
+        backgroundColor:' #fafafa'
+    }">
       <v-content>
           <router-view></router-view>
       </v-content>

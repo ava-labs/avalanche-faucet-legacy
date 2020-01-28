@@ -5,6 +5,8 @@ import vuetify from './plugins/vuetify' // path to vuetify export
 
 import store from './store/index';
 import router from './router';
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+import '@fortawesome/fontawesome-free/css/all.css'
 
 Vue.config.productionTip = false
 
