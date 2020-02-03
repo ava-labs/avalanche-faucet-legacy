@@ -55,6 +55,11 @@ const staticConf = { maxAge: '1y', etag: false };
 app.use(express.static(publicPath, staticConf));
 app.use('/', history());
 
+// Force HTTPS
+app.get("*", function(request, response){
+    response.redirect("https://" + request.headers.host + request.url);
+});
+
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`listening on \t${port}`);
