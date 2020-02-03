@@ -6,7 +6,7 @@ const express = require('express');
 const { resolve } = require('path');
 const {FAUCET_ADDRESS, avm} = require('./ava');
 const history = require('connect-history-api-fallback');
-const configureAPI = require('./configure');
+const {beforeMiddleware} = require('./configure');
 
 
 
@@ -44,7 +44,7 @@ const app = express();
 
 
 // API
-configureAPI(app);
+beforeMiddleware(app);
 
 
 // UI
