@@ -1,4 +1,4 @@
-const configureAPI = require('./src/server/configure');
+const {beforeMiddleware, onListening} = require('./src/server/configure');
 
 
 module.exports = {
@@ -6,7 +6,8 @@ module.exports = {
     "vuetify"
   ],
   "devServer": {
-    before: configureAPI,
+    before: beforeMiddleware,
+    onListening: onListening,
     "https": true
   }
 };

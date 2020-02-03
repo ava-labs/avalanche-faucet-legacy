@@ -21,9 +21,9 @@ const FAUCET_ADDRESS = myKeychain.importKey(PK);
 
 
 // console.log(`Environment: \t${APP_ENV}`);
-console.log("Droplet size: \t",DROP_SIZE);
-console.log("Asset Id: \t",ASSET_ID);
-console.log("Faucet Address: \t",FAUCET_ADDRESS);
+// console.log("Droplet size: \t",DROP_SIZE);
+// console.log("Asset Id: \t",ASSET_ID);
+// console.log("Faucet Address: \t",FAUCET_ADDRESS);
 
 module.exports = {
     ava,
