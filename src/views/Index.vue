@@ -97,7 +97,7 @@
                 window.grecaptcha.render(
                     parent.$refs.captcha,
                     {
-                        'sitekey' : '6LcNj8sUAAAAAGjcbFpc9_0Aoh4v5rfadyMbPTKY'
+                        'sitekey' : parent.captchaKey
                     }
                 )
             }
@@ -105,6 +105,9 @@
         computed: {
             isDev(){
                 return process.env.VUE_APP_ENV !== 'production';
+            },
+            captchaKey(){
+                return process.env.VUE_APP_CAPTCHA_SITE_KEY;
             }
         },
         destroyed() {
