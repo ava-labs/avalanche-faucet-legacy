@@ -6,13 +6,14 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || 9650;
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "https";
 const AVA_NETWORK_ID = process.env.AVA_NETWORK_ID || "12345";
+const AVA_CHAIN_ID = process.env.AVA_CHAIN_ID || "2PfbSxTqpTGFF2xCX2YgrW6ncrksfmEhcNXGv9rE9CgTRqT4hM";
 const PK =  process.env.PRIVATE_KEY; // The private key that holds the given assets to supply the faucet
 const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the faucet
 const DROP_SIZE =  process.env.DROP_SIZE || 100; // how much of the given asset to transfer from the faucet
 
 let bintools = slopes.BinTools.getInstance();
 
-let ava = new slopes.Slopes(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), "2PfbSxTqpTGFF2xCX2YgrW6ncrksfmEhcNXGv9rE9CgTRqT4hM");
+let ava = new slopes.Slopes(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
 let avm = ava.AVM();
 
 let myKeychain = avm.keyChain();
