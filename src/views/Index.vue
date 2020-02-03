@@ -4,11 +4,14 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
                 <v-card-title>
-                    The AVA Faucet
+                        The $AVA Faucet
                 </v-card-title>
+                <v-card-subtitle>
+                    <span class="devmode" v-if="isDev">(Development)</span>
+                </v-card-subtitle>
                 <v-card-text v-show="state==='form'">
                     <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>
-                    <div ref="captcha" class="captcha"></div>
+                    <div ref="captcha" class="captcha" v-show="!isDev"></div>
                     <div class="errors">
                         <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
                     </div>
@@ -17,6 +20,11 @@
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
                     <v-btn @click="clear" block>Start again</v-btn>
+                </v-card-text>
+                <v-card-text v-show="state==='error'">
+                    <p>{{responseError}}</p>
+                    <p>Oooops! Looks like something went wrong. Pleasse try again later..</p>
+                    <v-btn @click="clear" block>Try Again</v-btn>
                 </v-card-text>
             </v-card>
         </v-row>
@@ -32,13 +40,13 @@
                 isAjax: false,
                 address: '',
                 errors: [],
+                responseError: '',
                 captchaResponse: '',
                 state: 'form', // form || success
             }
         },
         methods:{
             clear(){
-                this.address = "";
                 this.captchaResponse = "";
                 window.grecaptcha.reset();
                 this.state = "form";
@@ -53,7 +61,7 @@
                     this.errors.push("Please enter a valid address.")
                     this.errAddress = true;
                 }
-                if(!this.captchaResponse){
+                if(!this.captchaResponse && !this.isDev){
                     this.errors.push("You must fill the captcha.")
                 }
 
@@ -68,12 +76,14 @@
                     this.state = 'success';
                 }else{
                     console.log(data);
+                    this.responseError = data.message;
+                    this.state = 'error';
                 }
                 window.grecaptcha.reset();
             },
             requestToken(){
                 this.isAjax = true;
-                axios.post('/token',{
+                axios.post('/api/token',{
                     "g-recaptcha-response": this.captchaResponse,
                     "address": this.address
                 }).then(this.onresponse);
@@ -81,6 +91,7 @@
         },
         mounted() {
             let parent = this;
+
             window.onloadCallback = function(){
                 console.log('CB');
                 window.grecaptcha.render(
@@ -89,6 +100,11 @@
                         'sitekey' : '6LcNj8sUAAAAAGjcbFpc9_0Aoh4v5rfadyMbPTKY'
                     }
                 )
+            }
+        },
+        computed: {
+            isDev(){
+                return process.env.VUE_APP_ENV !== 'production';
             }
         },
         destroyed() {
@@ -100,8 +116,13 @@
     .card{
         margin: auto;
         /*padding: 30px;*/
+        text-align: left;
         width: 420px;
         background-color: #fff !important;
+    }
+
+    .devmode{
+        color: #ff4444;
     }
 
     .captcha{
