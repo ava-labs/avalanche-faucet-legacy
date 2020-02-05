@@ -15,7 +15,7 @@
                     <div class="errors">
                         <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
                     </div>
-                    <v-btn @click="onSubmit" block :loading="isAjax" depressed>REQUEST 100 $AVA</v-btn>
+                    <v-btn @click="onSubmit" block :loading="isAjax" depressed>REQUEST 25 $AVA</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
