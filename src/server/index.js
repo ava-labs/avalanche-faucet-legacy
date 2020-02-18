@@ -48,17 +48,28 @@ beforeMiddleware(app);
 
 
 // UI
+app.use((req, res, next) => {
+    if (req.secure) {
+        // request was via https, so do no special handling
+        next();
+    } else {
+        // request was via http, so redirect to https
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
+
+// Serve static files
 const publicPath = resolve(__dirname, '../../dist');
 const staticConf = { maxAge: '1y', etag: false };
-
-
 app.use(express.static(publicPath, staticConf));
-app.use('/', history());
+
+
+app.use(history());
 
 // Force HTTPS
-app.get("*", function(request, response){
-    response.redirect("https://" + request.headers.host + request.url);
-});
+// app.get("*", function(request, response){
+//     response.redirect("https://" + request.headers.host + request.url);
+// });
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

@@ -27,7 +27,7 @@ router.post('/token', (req, res) => {
                 message: txid
             });
         }).catch(err => {
-            // console.error(err);
+            console.error(err);
             res.json({
                 status: 'error',
                 message: 'Error issuing the transaction.'
@@ -36,7 +36,7 @@ router.post('/token', (req, res) => {
         return;
     }
 
-
+    // Return error if captcha doesnt exist
     if(!captchaResponse){
         res.json({
             status: 'error',
@@ -49,6 +49,8 @@ router.post('/token', (req, res) => {
     params.append('secret', CAPTCHA_SECRET );
     params.append('response', captchaResponse );
 
+
+    // Verify Captcha
     axios({
         method: 'post',
         url: "https://www.google.com/recaptcha/api/siteverify",
@@ -56,6 +58,7 @@ router.post('/token', (req, res) => {
     }).then(axios_res => {
         // console.log(axios_res.data);
         let data = axios_res.data;
+        // If captcha succesfull send tx
         if(data.success){
             sendTx(address).then(txid => {
                 res.json({
@@ -63,7 +66,7 @@ router.post('/token', (req, res) => {
                     message: txid
                 });
             }).catch(err => {
-                // console.error(err);
+                console.error(err);
                 res.json({
                     status: 'error',
                     message: 'Error issuing the transaction.'
@@ -91,7 +94,7 @@ async function sendTx(addr){
     // console.log(utxos.getAllUTXOs());
     let sendAmount = new BN(DROP_SIZE);
 
-    let unsigned_tx = AVA.avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, ASSET_ID);
+    let unsigned_tx = await AVA.avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, ASSET_ID);
     let signed_tx = AVA.avm.signTx(unsigned_tx);
     let txid = await AVA.avm.issueTx(signed_tx);
 
