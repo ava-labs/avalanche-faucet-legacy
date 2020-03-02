@@ -4,18 +4,22 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
                 <v-card-title>
-                        The $AVA Faucet
+                        The $AVA Test Faucet
                 </v-card-title>
                 <v-card-subtitle>
                     <span class="devmode" v-if="isDev">(Development)</span>
                 </v-card-subtitle>
                 <v-card-text v-show="state==='form'">
-                    <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>
+                    <div>
+                        <label>Address (Where to send the tokens.)</label>
+                        <qr-input v-model="address"></qr-input>
+                    </div>
+<!--                    <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>-->
                     <div ref="captcha" class="captcha" v-show="!isDev"></div>
                     <div class="errors">
                         <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
                     </div>
-                    <v-btn @click="onSubmit" block :loading="isAjax" depressed>REQUEST 25 $AVA</v-btn>
+                    <v-btn @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST 25 $AVA</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
@@ -32,8 +36,12 @@
 </template>
 <script>
     import axios from '../axios';
+    import {QrInput} from '@avalabs/vue_components';
 
     export default {
+        components: {
+            QrInput
+        },
         data(){
             return{
                 errAddress: false,
@@ -103,6 +111,12 @@
             }
         },
         computed: {
+            canSubmit(){
+                if(this.address.length > 8){
+                    return true;
+                }
+                return false;
+            },
             isDev(){
                 return process.env.VUE_APP_ENV !== 'production';
             },
@@ -153,5 +167,22 @@
     .gif{
         height: 120px;
         object-fit: fill;
+    }
+
+
+    @media only screen and (max-width: 600px) {
+        .container{
+            padding: 0;
+            align-items: baseline;
+        }
+        .row{
+            width: 100%;
+            margin: 0 !important;
+        }
+        .card{
+            width: 100%;
+            height: 100vh;
+            border-radius: 0 !important;
+        }
     }
 </style>
