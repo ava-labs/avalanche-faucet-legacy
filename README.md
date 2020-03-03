@@ -1,58 +1,53 @@
-# ava_faucet
-
+# AVA Faucet
 
 There are two different layers in this project. The Node Express backend and the Vue.js front end.
 
 
-# Common
+## Vue Application
 
-#### Project setup
-```
-npm install
-```
+### Installation
+1) Install javascript dependencies with ``npm install``.
+2) Create a ``.env`` file for development that will have your environment variables.
+3) Install Gecko, our AVA node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
 
-#### Compiles and hot-reloads for development
-```
-npm run serve
+### ENV Files
+Make sure to read the official Vue environment variables document to get an understanding
+of how it works for development and production (https://cli.vuejs.org/guide/mode-and-env.html). Vairables
+ beginning with ``VUE_APP_`` will get injected into the vue application.
+ 
+Refer to ``.env.example``
 
-```
+- ``VUE_APP_ENV`` Either ``production`` or ``development``
+- ``AVA_IP`` The ip address of the Gecko jrpc node.
+- ``AVA_PORT`` The port of the Gecko jrpc node.
+- ``AVA_PROTOCOL`` Either ``http`` or ``https``
+- ``AVA_NETWORK_ID`` What is the network id of the AVA network you are connecting to.
+- ``AVA_CHAIN_ID`` The blockchain id of the AVA  Network you are connecting to.
+- ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha (https://www.google.com/recaptcha/intro/v3.html)
+- ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
+- ``ASSET_ID`` Which asset id is the official AVA Token.
+- ``PRIVATE_KEY`` A private key with funds in it.
+- ``DROP_SIZE`` How much nanoAvas is given from this faucet.
 
+### Running The Project
 
-
+In order for the faucet to work, it needs the AVA network to operate on. 
+1) Make sure you have installed and able to run a Gecko node properly.
+2) All environment variables are correct and your private key has funds in it.
+2) Run the project with hot reloading ``npm run serve``
 
 
 # Node Express
 
-#### To Run
-```
-node index.js
-```
+This backend is used to verify captchas and make a request to the AVA Network to issue tokens. The backend files are stored 
+in the ``src/server`` directory.
+The node is automatically started with the ``npm run serve`` command but can be individually started with ``node src/server/index.js``
 
 
 
 
 
-# Vue Frontend
-
-
-#### Compiles and minifies for production
-```
-npm run build
-```
-
-#### Lints and fixes files
-```
-npm run lint
-```
-
-#### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
-
-
-
-```
-
-
-
+## Deployment
+ 1) Setup environment variables for production
+ 2) Compile and minify to have a production ready application with ``npm run build``. 
+ 3) Run the node backend by running ``node src/server/index.js``.
