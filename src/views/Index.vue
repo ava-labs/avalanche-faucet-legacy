@@ -26,8 +26,11 @@
                     <v-btn @click="clear" block>Start again</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='error'">
-                    <p>{{responseError}}</p>
-                    <p>Oooops! Looks like something went wrong. Pleasse try again later..</p>
+                    <v-alert type="error" text>
+                        {{responseError}}
+                        <br><br>
+                        <p>Oooops! Looks like something went wrong. Pleasse try again later..</p>
+                    </v-alert>
                     <v-btn @click="clear" block>Try Again</v-btn>
                 </v-card-text>
             </v-card>

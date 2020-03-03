@@ -1,11 +1,11 @@
 # AVA Faucet
 
-There are two different layers in this project. The Node Express backend and the Vue.js front end.
+There are two different layers in this project. The Node Express backend and the Vue.js frontend.
 
 ## Requirements
 - Recent version of npm (6.13.4)
 - Node v12.14.1
-- Google reCaptcha keys for **reCaptcha v2** with **"I'm not a robot" Checkbox**. Make sure to have localhost listed in the domains. (https://www.google.com/recaptcha/intro/v3.html)
+- Google reCaptcha keys for **reCaptcha v2** with **"I'm not a robot" Checkbox**. Make sure to have 'localhost' listed in the domains. (https://www.google.com/recaptcha/intro/v3.html)
 
 ## Vue Application
 ### Installation
@@ -26,7 +26,7 @@ Refer to ``.env.example``
 - ``AVA_PROTOCOL`` Either ``http`` or ``https``
 - ``AVA_NETWORK_ID`` What is the network id of the AVA network you are connecting to.
 - ``AVA_CHAIN_ID`` The blockchain id of the AVA  Network you are connecting to.
-- ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha (https://www.google.com/recaptcha/intro/v3.html)
+- ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha
 - ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
 - ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVA asset id.
 - ``PRIVATE_KEY`` A private key with funds in it.

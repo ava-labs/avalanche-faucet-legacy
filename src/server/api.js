@@ -64,11 +64,17 @@ router.post('/token', (req, res) => {
         let data = axios_res.data;
         // If captcha succesfull send tx
         if(data.success){
-            sendTx(address).then(txid => {
-                res.json({
-                    status: 'success',
-                    message: txid
-                });
+            sendTx(address, res).then(txid => {
+
+                if(txid.status){
+                    res.json(txid);
+                }else{
+                    res.json({
+                        status: 'success',
+                        message: txid
+                    });
+                }
+
             }).catch(err => {
                 console.error(err);
                 res.json({
@@ -98,7 +104,18 @@ async function sendTx(addr){
     // console.log(utxos.getAllUTXOs());
     let sendAmount = new BN(CONFIG.DROP_SIZE);
 
-    let unsigned_tx = await avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID);
+    let unsigned_tx = await avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
+        return {
+            status: 'error',
+            message: 'Insufficient funds to create the transaction.'
+        }
+    });
+
+    // Meaning an error occured
+    if(unsigned_tx.status){
+        return unsigned_tx;
+    }
+
     let signed_tx = avm.signTx(unsigned_tx);
     let txid = await avm.issueTx(signed_tx);
 
