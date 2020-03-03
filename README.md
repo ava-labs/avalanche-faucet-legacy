@@ -9,14 +9,14 @@ There are two different layers in this project. The Node Express backend and the
 
 ## Vue Application
 ### Installation
-1) Install javascript dependencies with ``npm install``.
-2) Create a ``.env`` file for development that will have your environment variables.
-3) Install Gecko, our AVA node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
+1) Cloen the repository ``git clone https://github.com/ava-labs/faucet-site.git``
+2) Go to the root directory `cd faucet-site`
+3) Install javascript dependencies with ``npm install``.
+4) Create a ``.env`` file by copying ``.env.example`` 
+5) Install Gecko, our AVA node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
 
 ### ENV Files
-Make sure to read the official Vue environment variables document to get an understanding
-of how it works for development and production (https://cli.vuejs.org/guide/mode-and-env.html). Vairables
- beginning with ``VUE_APP_`` will get injected into the vue application.
+Variables beginning with ``VUE_APP_`` will get injected into the vue application.
  
 Refer to ``.env.example``
 
@@ -29,7 +29,7 @@ Refer to ``.env.example``
 - ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha
 - ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
 - ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVA asset id.
-- ``PRIVATE_KEY`` A private key with funds in it.
+- ``PRIVATE_KEY`` A private key with funds in it. You can use the default for AVA tokens.
 - ``DROP_SIZE`` How much nanoAvas is given from this faucet.
 
 ### Running The Project
@@ -39,16 +39,14 @@ In order for the faucet to work, it needs the AVA network to operate on.
 2) All environment variables are correct and your private key has funds in it.
 2) Run the project with hot reloading ``npm run serve``
 
+When you go to the website on your browser, you might get a warning saying 
+'Site is not secure'. This is because we are signing our own SSL Certificates. Please ignore and continue to the website.
 
 # Node Express
 
 This backend is used to verify captchas and make a request to the AVA Network to issue tokens. The backend files are stored 
 in the ``src/server`` directory.
 The node is automatically started with the ``npm run serve`` command but can be individually started with ``node src/server/index.js``
-
-
-
-
 
 ## Deployment
  1) Setup environment variables for production
