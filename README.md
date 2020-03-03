@@ -9,7 +9,7 @@ There are two different layers in this project. The Node Express backend and the
 
 ## Vue Application
 ### Installation
-1) Cloen the repository ``git clone https://github.com/ava-labs/faucet-site.git``
+1) Clone the repository ``git clone https://github.com/ava-labs/faucet-site.git``
 2) Go to the root directory `cd faucet-site`
 3) Install javascript dependencies with ``npm install``.
 4) Create a ``.env`` file by copying ``.env.example`` 
