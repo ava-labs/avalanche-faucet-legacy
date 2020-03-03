@@ -10,6 +10,7 @@ const AVA_CHAIN_ID = process.env.AVA_CHAIN_ID || "2PfbSxTqpTGFF2xCX2YgrW6ncrksfm
 const PK =  process.env.PRIVATE_KEY; // The private key that holds the given assets to supply the faucet
 const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the faucet
 const DROP_SIZE =  process.env.DROP_SIZE || 100; // how much of the given asset to transfer from the faucet
+const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
 
 let bintools = slopes.BinTools.getInstance();
 
@@ -21,18 +22,35 @@ let myKeychain = avm.keyChain();
 const FAUCET_ADDRESS = myKeychain.importKey(PK);
 
 
-// console.log(`Environment: \t${APP_ENV}`);
-// console.log("Droplet size: \t",DROP_SIZE);
-// console.log("Asset Id: \t",ASSET_ID);
-// console.log("Faucet Address: \t",FAUCET_ADDRESS);
+const CONFIG = {
+    AVA_IP: AVA_IP,
+    AVA_PORT: AVA_PORT,
+    AVA_PROTOCOL: AVA_PROTOCOL,
+    AVA_NETWORK_ID: AVA_NETWORK_ID,
+    AVA_CHAIN_ID: AVA_CHAIN_ID,
+    PK: PK,
+    ASSET_ID: ASSET_ID,
+    DROP_SIZE: DROP_SIZE,
+    FAUCET_ADDRESS: FAUCET_ADDRESS,
+    CAPTCHA_SECRET: CAPTCHA_SECRET
+};
+
+
+
+async function checkAssetId(){
+    if(!CONFIG.ASSET_ID){
+        let res = await avm.getAssetDescription('AVA');
+        CONFIG.ASSET_ID = bintools.avaSerialize(res.assetID);
+        console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
+    }
+}
+checkAssetId();
+
 
 module.exports = {
     ava,
     avm,
     bintools,
-    FAUCET_ADDRESS
+    CONFIG
 };
-
-// let pkbuf = bintools.b58ToBuffer(PK);
-// let keypair = myKeychain.getKey(FAUCET_ADDRESS);
 

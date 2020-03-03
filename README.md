@@ -2,9 +2,12 @@
 
 There are two different layers in this project. The Node Express backend and the Vue.js front end.
 
+## Requirements
+- Recent version of npm (6.13.4)
+- Node v12.14.1
+- Google reCaptcha keys for **reCaptcha v2** with **"I'm not a robot" Checkbox**. Make sure to have localhost listed in the domains. (https://www.google.com/recaptcha/intro/v3.html)
 
 ## Vue Application
-
 ### Installation
 1) Install javascript dependencies with ``npm install``.
 2) Create a ``.env`` file for development that will have your environment variables.
@@ -25,7 +28,7 @@ Refer to ``.env.example``
 - ``AVA_CHAIN_ID`` The blockchain id of the AVA  Network you are connecting to.
 - ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha (https://www.google.com/recaptcha/intro/v3.html)
 - ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
-- ``ASSET_ID`` Which asset id is the official AVA Token.
+- ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVA asset id.
 - ``PRIVATE_KEY`` A private key with funds in it.
 - ``DROP_SIZE`` How much nanoAvas is given from this faucet.
 

@@ -1,11 +1,15 @@
+const {CONFIG, avm} = require('./ava');
+
+
 const axios = require('axios').default;
 
-const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
-const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the faucet
-const DROP_SIZE =  process.env.DROP_SIZE || 100; // how much of the given asset to transfer from the faucet
+
+// const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
+// const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the faucet
+// const DROP_SIZE =  process.env.DROP_SIZE || 100; // how much of the given asset to transfer from the faucet
 
 const BN = require('bn.js');
-const AVA = require('./ava');
+// const AVA = require('./ava');
 var router = require('express').Router();
 
 
@@ -46,7 +50,7 @@ router.post('/token', (req, res) => {
     }
 
     let params = new URLSearchParams();
-    params.append('secret', CAPTCHA_SECRET );
+    params.append('secret', CONFIG.CAPTCHA_SECRET );
     params.append('response', captchaResponse );
 
 
@@ -89,14 +93,14 @@ module.exports = router;
 
 // Sends a drop from the faucet to the given address
 async function sendTx(addr){
-    let myAddresses = [AVA.FAUCET_ADDRESS];
-    let utxos = await AVA.avm.getUTXOs(myAddresses);
+    let myAddresses = [CONFIG.FAUCET_ADDRESS];
+    let utxos = await avm.getUTXOs(myAddresses);
     // console.log(utxos.getAllUTXOs());
-    let sendAmount = new BN(DROP_SIZE);
+    let sendAmount = new BN(CONFIG.DROP_SIZE);
 
-    let unsigned_tx = await AVA.avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, ASSET_ID);
-    let signed_tx = AVA.avm.signTx(unsigned_tx);
-    let txid = await AVA.avm.issueTx(signed_tx);
+    let unsigned_tx = await avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID);
+    let signed_tx = avm.signTx(unsigned_tx);
+    let txid = await avm.issueTx(signed_tx);
 
     console.log(`Sent a drop with tx id:  ${txid} to address: ${addr}`);
     return txid;
