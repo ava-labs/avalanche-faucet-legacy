@@ -1,44 +1,19 @@
 const {CONFIG, avm} = require('./ava');
-
-
 const axios = require('axios').default;
-
-
-// const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
-// const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the faucet
-// const DROP_SIZE =  process.env.DROP_SIZE || 100; // how much of the given asset to transfer from the faucet
 
 const BN = require('bn.js');
 // const AVA = require('./ava');
 var router = require('express').Router();
 
-
-
-const APP_ENV = process.env.VUE_APP_ENV || "production";
-const isDev = (APP_ENV==="development");
-
+router.get('/howmuch', (req, res) => {
+    res.json({
+        dropSize: CONFIG.DROP_SIZE
+    });
+});
 
 router.post('/token', (req, res) => {
     let address = req.body["address"];
     let captchaResponse = req.body["g-recaptcha-response"];
-
-
-    // if on development mode, skip captcha
-    if(isDev){
-        sendTx(address).then(txid => {
-            res.json({
-                status: 'success',
-                message: txid
-            });
-        }).catch(err => {
-            console.error(err);
-            res.json({
-                status: 'error',
-                message: 'Error issuing the transaction.'
-            });
-        });
-        return;
-    }
 
     // Return error if captcha doesnt exist
     if(!captchaResponse){
@@ -93,25 +68,27 @@ router.post('/token', (req, res) => {
 });
 
 
-module.exports = router;
 
 
 
 // Sends a drop from the faucet to the given address
 async function sendTx(addr){
     let myAddresses = [CONFIG.FAUCET_ADDRESS];
+    // console.log(myAddresses);
     let utxos = await avm.getUTXOs(myAddresses);
     // console.log(utxos.getAllUTXOs());
     let sendAmount = new BN(CONFIG.DROP_SIZE);
 
+    // console.log(avm.getBlockchainID());
     let unsigned_tx = await avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
+        console.log(err);
         return {
             status: 'error',
             message: 'Insufficient funds to create the transaction.'
         }
     });
 
-    // Meaning an error occured
+    // Meaning an error occurred
     if(unsigned_tx.status){
         return unsigned_tx;
     }
@@ -122,3 +99,7 @@ async function sendTx(addr){
     console.log(`Sent a drop with tx id:  ${txid} to address: ${addr}`);
     return txid;
 }
+
+
+
+module.exports = router;

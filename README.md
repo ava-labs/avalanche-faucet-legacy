@@ -20,7 +20,6 @@ Variables beginning with ``VUE_APP_`` will get injected into the vue application
  
 Refer to ``.env.example``
 
-- ``VUE_APP_ENV`` Either ``production`` or ``development``
 - ``AVA_IP`` The ip address of the Gecko jrpc node.
 - ``AVA_PORT`` The port of the Gecko jrpc node.
 - ``AVA_PROTOCOL`` Either ``http`` or ``https``

@@ -4,7 +4,7 @@ const express = require('express');
 // const cors = require('cors');
 // const bodyParser = require('body-parser');
 const { resolve } = require('path');
-const {CONFIG, avm, bintools} = require('./ava');
+const {CONFIG, avm} = require('./ava');
 const history = require('connect-history-api-fallback');
 const {beforeMiddleware} = require('./configure');
 
@@ -14,7 +14,7 @@ const {beforeMiddleware} = require('./configure');
 
 // const axios = require('axios').default;
 
-const APP_ENV = process.env.VUE_APP_ENV || "production";
+// const APP_ENV = process.env.VUE_APP_ENV || "production";
 // const isDev = (APP_ENV==="development");
 
 // const AVA_IP = process.env.AVA_IP || "localhost";
@@ -83,15 +83,17 @@ app.use(history());
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`listening on \t${port}`);
-    console.log(`Environment: \t${APP_ENV}`);
     console.log("Droplet size: \t",CONFIG.DROP_SIZE);
-    console.log("Asset Id: \t",CONFIG.ASSET_ID);
     console.log("Faucet Address: \t",CONFIG.FAUCET_ADDRESS);
 
-    avm.getUTXOs([CONFIG.FAUCET_ADDRESS]).then(utxos => {
-        let balance = utxos.getBalance([CONFIG.FAUCET_ADDRESS], CONFIG.ASSET_ID);
-        console.log("Available Balance: ",balance.toString());
-    });
+    if(CONFIG.ASSET_ID){
+        console.log("Asset Id: \t",CONFIG.ASSET_ID);
+        avm.getUTXOs([CONFIG.FAUCET_ADDRESS]).then(utxos => {
+            let balance = utxos.getBalance([CONFIG.FAUCET_ADDRESS], CONFIG.ASSET_ID);
+            console.log("Available Balance: ",balance.toString());
+        });
+    }
+
 });
 
 // const port = process.env.PORT || 4000;

@@ -4,26 +4,28 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
                 <v-card-title>
-                        The $AVA Test Faucet
+                        The $AVA Faucet
                 </v-card-title>
                 <v-card-subtitle>
-                    <span class="devmode" v-if="isDev">(Development)</span>
+
                 </v-card-subtitle>
                 <v-card-text v-show="state==='form'">
                     <div>
                         <label>Address (Where to send the tokens.)</label>
                         <qr-input v-model="address"></qr-input>
                     </div>
-<!--                    <v-text-field placeholder="0000000AVA000" v-model="address" label="Address" hint="Which address to send the tokens." persistent-hint :error="errAddress"></v-text-field>-->
-                    <div ref="captcha" class="captcha" v-show="!isDev"></div>
+                    <div ref="captcha" class="captcha"></div>
                     <div class="errors">
                         <p v-for="(error, i) in errors" :key="i">*{{error}}</p>
                     </div>
-                    <v-btn @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST 25 $AVA</v-btn>
+                    <v-alert type="error" dense outlined>
+                        This is a beta faucet. Funds are not real.
+                    </v-alert>
+                    <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} $nAVA</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
-                    <v-btn @click="clear" block>Start again</v-btn>
+                    <v-btn @click="clear" depressed block>Start again</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='error'">
                     <v-alert type="error" text>
@@ -31,7 +33,7 @@
                         <br><br>
                         <p>Oooops! Looks like something went wrong. Pleasse try again later..</p>
                     </v-alert>
-                    <v-btn @click="clear" block>Try Again</v-btn>
+                    <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
             </v-card>
         </v-row>
@@ -54,6 +56,7 @@
                 responseError: '',
                 captchaResponse: '',
                 state: 'form', // form || success
+                dropSize: 0,
             }
         },
         methods:{
@@ -69,11 +72,11 @@
                 this.captchaResponse = window.grecaptcha.getResponse();
 
                 if(!this.address){
-                    this.errors.push("Please enter a valid address.")
+                    this.errors.push("Please enter a valid address.");
                     this.errAddress = true;
                 }
-                if(!this.captchaResponse && !this.isDev){
-                    this.errors.push("You must fill the captcha.")
+                if(!this.captchaResponse ){
+                    this.errors.push("You must fill the captcha.");
                 }
 
                 if(this.errors.length===0){
@@ -100,6 +103,15 @@
                 }).then(this.onresponse);
             }
         },
+        created() {
+            let parent = this;
+
+            axios.get('/api/howmuch').then(res => {
+                let size = res.data.dropSize;
+                parent.dropSize = size;
+            });
+
+        },
         mounted() {
             let parent = this;
 
@@ -119,9 +131,6 @@
                     return true;
                 }
                 return false;
-            },
-            isDev(){
-                return process.env.VUE_APP_ENV !== 'production';
             },
             captchaKey(){
                 return process.env.VUE_APP_CAPTCHA_SITE_KEY;
@@ -170,6 +179,14 @@
     .gif{
         height: 120px;
         object-fit: fill;
+    }
+
+    .v-alert{
+        font-size: 14px;
+    }
+
+    .submit{
+        text-transform: none;
     }
 
 
