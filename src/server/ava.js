@@ -45,6 +45,10 @@ async function checkAssetId(){
         let res = await avm.getAssetDescription('AVA');
         CONFIG.ASSET_ID = bintools.avaSerialize(res.assetID);
         console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
+    }else{
+        let res = await avm.getAssetDescription(CONFIG.ASSET_ID);
+        CONFIG.ASSET_ID = bintools.avaSerialize(res.assetID);
+        console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
     }
 }
 checkAssetId();
