@@ -51,3 +51,30 @@ The node is automatically started with the ``npm run serve`` command but can be 
  1) Setup environment variables for production
  2) Compile and minify to have a production ready application with ``npm run build``. 
  3) Run the node backend by running ``node src/server/index.js``.
+
+
+
+
+# Browser Support
+
+We suggest using Google Chrome to view the AVA Faucet website.
+
+### Firefox and https
+
+Firefox does not allow https requests to localhost. But the AVA Wallet uses https by default, so we will need to change this to http. Make this switch by editing the `vue.config.json` file in the root directory and change 
+
+```
+devServer: {
+    https: true
+},
+```
+
+to
+
+```
+devServer: {
+    https: false
+},
+```
+
+and run `npm run serve` to reflect the change.
