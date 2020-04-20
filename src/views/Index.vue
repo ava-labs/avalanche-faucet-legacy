@@ -24,7 +24,7 @@
                     <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} $nAVA</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='success'">
-                    <p>Transfer successfull.</p>
+                    <p>Transfer successful.</p>
                     <v-btn @click="clear" depressed block>Start again</v-btn>
                 </v-card-text>
                 <v-card-text v-show="state==='error'">
