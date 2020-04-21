@@ -28,8 +28,10 @@ Refer to ``.env.example``
 - ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha
 - ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
 - ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVA asset id.
-- ``PRIVATE_KEY`` A private key with funds in it. You can use the default for AVA tokens.
-- ``DROP_SIZE`` How much nanoAvas is given from this faucet.
+- ``PRIVATE_KEY_X`` A private key for the X chain with funds in it. You can use the default for AVA tokens.
+- ``PRIVATE_KEY_C`` A private key for the C chain with funds in it. Only needed for the transactions on the C chain.
+- ``DROP_SIZE_X`` How much nanoAvas is given from this faucet. Used by the X chain.
+- ``DROP_SIZE_C`` How much wei is given from this faucet. Used by the C chain.
 
 ### Running The Project
 
