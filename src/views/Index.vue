@@ -20,7 +20,7 @@
                     <v-alert type="error" dense outlined>
                         This is a beta faucet. Funds are not real.
                     </v-alert>
-                    <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} $nAVA</v-btn>
+                    <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} {{assetName}}</v-btn>
                 </v-card-text>
 
 
@@ -46,6 +46,7 @@
     import axios from '../axios';
     import {QrInput} from '@avalabs/vue_components';
     const Web3 = require('web3');
+    import Big from 'big.js';
     const slopes = require("slopes");
     let bintools = slopes.BinTools.getInstance();
 
@@ -63,7 +64,8 @@
                 responseError: '',
                 captchaResponse: '',
                 state: 'form', // form || success
-                dropSize: 0,
+                dropSizeX: 0,
+                dropSizeC: 0,
             }
         },
         methods:{
@@ -161,8 +163,10 @@
             let parent = this;
 
             axios.get('/api/howmuch').then(res => {
-                let size = res.data.dropSize;
-                parent.dropSize = size;
+                let sizeX = parseInt(res.data.dropSizeX);
+                let sizeC = Big(res.data.dropSizeC);
+                parent.dropSizeX = sizeX;
+                parent.dropSizeC = sizeC;
             });
 
         },
@@ -189,12 +193,27 @@
             captchaKey(){
                 return process.env.VUE_APP_CAPTCHA_SITE_KEY;
             },
+
             // either X for x-chain or C for c-chain, or null if none
             assetType(){
                 if(this.verifyAddress(this.address)){
                     return this.address[0];
                 }
                 return null;
+            },
+            assetName(){
+                if(this.assetType === 'C'){
+                    return 'C-AVA';
+                }
+                return '$nAVA';
+            },
+
+            dropSize(){
+                if(this.assetType === 'C'){
+                    // ETH has 18 decimal points
+                    return (this.dropSizeC.div(Math.pow(10,18))).toFixed(4);
+                }
+                return this.dropSizeX;
             }
         },
         destroyed() {

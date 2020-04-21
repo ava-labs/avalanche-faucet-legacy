@@ -10,6 +10,10 @@ const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
 
+const CONFIG_C = {
+  PK: PK,
+  DROP_SIZE: txAmount
+};
 
 // Init web 3 with target AVA Node
 
@@ -46,5 +50,6 @@ async function sendAvaC(receiver){
 
 module.exports = {
     sendAvaC,
-    web3
+    web3,
+    CONFIG_C
 };

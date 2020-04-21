@@ -1,13 +1,14 @@
 const {CONFIG, avm, bintools} = require('./ava');
 const axios = require('axios').default;
-const {sendAvaC} = require("./eth");
+const {sendAvaC, CONFIG_C} = require("./eth");
 const BN = require('bn.js');
 // const AVA = require('./ava');
 var router = require('express').Router();
 
 router.get('/howmuch', (req, res) => {
     res.json({
-        dropSize: CONFIG.DROP_SIZE
+        dropSizeX: CONFIG.DROP_SIZE,
+        dropSizeC: CONFIG_C.DROP_SIZE
     });
 });
 
