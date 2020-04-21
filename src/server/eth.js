@@ -7,13 +7,13 @@ const PK = process.env.PRIVATE_KEY_C; // The private key that holds the given as
 const txAmount = process.env.DROP_SIZE_C || "200000000000000000";
 const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
-
+const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
 
 
 // Init web 3 with target AVA Node
 
-let rpcUrl = `http://${AVA_IP}:${AVA_PORT}/ext/bc/C/rpc`;
+let rpcUrl = `${AVA_PROTOCOL}://${AVA_IP}:${AVA_PORT}/ext/bc/C/rpc`;
 let web3 = new Web3(rpcUrl);
 
 // Create the web3 account from the faucet private key

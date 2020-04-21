@@ -1,7 +1,6 @@
-const {CONFIG, avm} = require('./ava');
+const {CONFIG, avm, bintools} = require('./ava');
 const axios = require('axios').default;
 const {sendAvaC} = require("./eth");
-
 const BN = require('bn.js');
 // const AVA = require('./ava');
 var router = require('express').Router();
@@ -64,7 +63,6 @@ router.post('/token', (req, res) => {
 
             // C CHAIN
             else if(address[0] === 'C'){
-                console.log(`Sening C-AVA to: ${address}`);
 
                 let ethAddr = address.substring(2);
                 let result;
@@ -80,8 +78,12 @@ router.post('/token', (req, res) => {
                     }
                 }else{
                     try{
-                        result = await sendAvaC(ethAddr);
+                        let deserial = bintools.avaDeserialize(ethAddr);
+                        let hex = deserial.toString('hex');
+
+                        result = await sendAvaC(`0x${hex}`);
                     }catch(e){
+                        console.log(e);
                         res.json({
                             status: 'error',
                             message: 'Invalid Address.'

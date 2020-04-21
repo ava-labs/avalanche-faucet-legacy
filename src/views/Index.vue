@@ -87,7 +87,21 @@
                         }
                     }else if(chainAlias === 'C'){
                         let ethAddr = addr.substring(2);
-                        return Web3.utils.isAddress(ethAddr)
+
+                        // C chain ETH address
+                        if(ethAddr.substring(0,2) === '0x'){
+                            return Web3.utils.isAddress(ethAddr)
+                        }
+
+                        // C chain b58 address
+                        else{
+                            try{
+                                bintools.parseAddress(addr, chainAlias);
+                                return true;
+                            }catch (e) {
+                                return false;
+                            }
+                        }
                     }
                 }
 
