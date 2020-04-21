@@ -10,7 +10,7 @@ const {beforeMiddleware} = require('./configure');
 
 
 // VALUE CHECKING ####################################################
-if(!CONFIG.PK){
+if(!CONFIG.PK_X || !CONFIG.PK_C){
     console.error("You must start the server with a valid PRIVATE_KEY.");
 }
 
@@ -29,15 +29,15 @@ beforeMiddleware(app);
 
 
 // Https rerouting
-app.use((req, res, next) => {
-    if (req.secure) {
-        // request was via https, so do no special handling
-        next();
-    } else {
-        // request was via http, so redirect to https
-        res.redirect('https://' + req.headers.host + req.url);
-    }
-});
+// app.use((req, res, next) => {
+//     if (req.secure) {
+//         // request was via https, so do no special handling
+//         next();
+//     } else {
+//         // request was via http, so redirect to https
+//         res.redirect('https://' + req.headers.host + req.url);
+//     }
+// });
 
 // Serve static files
 const publicPath = resolve(__dirname, '../../dist');
@@ -49,16 +49,14 @@ app.use(history());
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
-    console.log(`listening on \t${port}`);
-    console.log("Droplet size: \t",CONFIG.DROP_SIZE);
+    console.log(`listening on port: \t${port}`);
+    console.log("(X) Droplet size: \t",CONFIG.DROP_SIZE);
     console.log("Faucet Address: \t",CONFIG.FAUCET_ADDRESS);
 
     if(CONFIG.ASSET_ID){
         console.log("Asset Id: \t",CONFIG.ASSET_ID);
-        avm.getUTXOs([CONFIG.FAUCET_ADDRESS]).then(utxos => {
-            let balance = utxos.getBalance([CONFIG.FAUCET_ADDRESS], CONFIG.ASSET_ID);
-            console.log("Available Balance: ",balance.toString());
+        avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then(res => {
+            console.log(`(X) Available Balance: ${res.toString()}`);
         });
     }
-
 });

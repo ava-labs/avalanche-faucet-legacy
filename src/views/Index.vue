@@ -6,9 +6,8 @@
                 <v-card-title>
                         The $AVA Faucet
                 </v-card-title>
-                <v-card-subtitle>
 
-                </v-card-subtitle>
+
                 <v-card-text v-show="state==='form'">
                     <div>
                         <label>Address (Where to send the tokens.)</label>
@@ -23,10 +22,14 @@
                     </v-alert>
                     <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} $nAVA</v-btn>
                 </v-card-text>
+
+
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successfull.</p>
                     <v-btn @click="clear" depressed block>Start again</v-btn>
                 </v-card-text>
+
+
                 <v-card-text v-show="state==='error'">
                     <v-alert type="error" text>
                         {{responseError}}
@@ -42,6 +45,10 @@
 <script>
     import axios from '../axios';
     import {QrInput} from '@avalabs/vue_components';
+    const Web3 = require('web3');
+    const slopes = require("slopes");
+    let bintools = slopes.BinTools.getInstance();
+
 
     export default {
         components: {
@@ -65,19 +72,52 @@
                 window.grecaptcha.reset();
                 this.state = "form";
             },
+
+            verifyAddress(addr){
+                // part of ava's chains
+                if(addr[1] === '-'){
+                    let chainAlias = addr[0];
+
+                    if(chainAlias === 'X'){
+                        try{
+                            bintools.parseAddress(addr, chainAlias);
+                            return true;
+                        }catch (e) {
+                            return false;
+                        }
+                    }else if(chainAlias === 'C'){
+                        let ethAddr = addr.substring(2);
+                        return Web3.utils.isAddress(ethAddr)
+                    }
+                }
+
+                return false;
+            },
             onSubmit(){
                 this.errors = [];
                 this.errAddress = false;
 
                 this.captchaResponse = window.grecaptcha.getResponse();
 
+                // Must enter Address
                 if(!this.address){
                     this.errors.push("Please enter a valid address.");
                     this.errAddress = true;
                 }
+
+                // Must enter valid address
+                let isValidAddr = this.verifyAddress(this.address);
+                if(!isValidAddr){
+                    this.errors.push("Invalid address.");
+                    this.errAddress = true;
+                }
+
+                // Must fill the captcha
                 if(!this.captchaResponse ){
                     this.errors.push("You must fill the captcha.");
                 }
+
+
 
                 if(this.errors.length===0){
                     this.requestToken();
@@ -134,6 +174,13 @@
             },
             captchaKey(){
                 return process.env.VUE_APP_CAPTCHA_SITE_KEY;
+            },
+            // either X for x-chain or C for c-chain, or null if none
+            assetType(){
+                if(this.verifyAddress(this.address)){
+                    return this.address[0];
+                }
+                return null;
             }
         },
         destroyed() {

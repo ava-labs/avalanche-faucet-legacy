@@ -20,7 +20,7 @@ function beforeMiddleware(app){
 }
 
 function onListening(){
-    console.log("Droplet size: \t",CONFIG.DROP_SIZE);
+    console.log("(X) Droplet size: \t",CONFIG.DROP_SIZE);
     console.log("Asset Id: \t",CONFIG.ASSET_ID);
     console.log("Faucet Address: \t",CONFIG.FAUCET_ADDRESS);
 }
