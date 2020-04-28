@@ -152,11 +152,19 @@
                 window.grecaptcha.reset();
             },
             requestToken(){
+                let parent = this;
                 this.isAjax = true;
                 axios.post('/api/token',{
                     "g-recaptcha-response": this.captchaResponse,
                     "address": this.address
-                }).then(this.onresponse);
+                }).then(this.onresponse).catch(() => {
+                    parent.onresponse({
+                        data:{
+                            status: 'error',
+                            message: "Request timeout."
+                        }
+                    });
+                });
             }
         },
         created() {
@@ -168,6 +176,16 @@
                 parent.dropSizeX = sizeX;
                 parent.dropSizeC = sizeC;
             });
+
+
+
+            // See if an address is given in the url
+            let query = this.$router.currentRoute.query;
+            let addr = query['address'];
+            if(addr){
+                this.address = addr;
+            }
+            console.log(query);
 
         },
         mounted() {
