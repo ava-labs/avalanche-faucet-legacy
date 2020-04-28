@@ -169,6 +169,16 @@
                 parent.dropSizeC = sizeC;
             });
 
+
+
+            // See if an address is given in the url
+            let query = this.$router.currentRoute.query;
+            let addr = query['address'];
+            if(addr){
+                this.address = addr;
+            }
+            console.log(query);
+
         },
         mounted() {
             let parent = this;
