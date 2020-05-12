@@ -4,7 +4,7 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
                 <v-card-title>
-                        The $AVA Faucet
+                        The AVA Faucet
                 </v-card-title>
 
 
@@ -26,6 +26,8 @@
 
                 <v-card-text v-show="state==='success'">
                     <p>Transfer successful.</p>
+                    <label style="font-weight: bold">Transaction ID</label>
+                    <p>{{txId}}</p>
                     <v-btn @click="clear" depressed block>Start again</v-btn>
                 </v-card-text>
 
@@ -66,6 +68,7 @@
                 state: 'form', // form || success
                 dropSizeX: 0,
                 dropSizeC: 0,
+                txId: "",
             }
         },
         methods:{
@@ -144,8 +147,9 @@
                 let data = res.data;
                 if(data.status === 'success'){
                     this.state = 'success';
+                    let txId = data.message;
+                    this.txId = txId;
                 }else{
-                    console.log(data);
                     this.responseError = data.message;
                     this.state = 'error';
                 }
@@ -223,7 +227,7 @@
                 if(this.assetType === 'C'){
                     return 'C-AVA';
                 }
-                return '$nAVA';
+                return 'nAVA';
             },
 
             dropSize(){
