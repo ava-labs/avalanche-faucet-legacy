@@ -134,7 +134,7 @@ async function sendTx(addr){
         }
     }
     // console.log(avm.getBlockchainID());
-    let unsigned_tx = await avm.makeUnsignedTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
+    let unsigned_tx = await avm.makeBaseTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
         console.log(err);
     });
 
