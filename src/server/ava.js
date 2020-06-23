@@ -1,4 +1,4 @@
-const slopes = require("slopes");
+const avalanche = require("avalanche");
 // const BN = require('bn.js');
 // const Buffer = require('buffer').Buffer;
 
@@ -15,9 +15,9 @@ const ASSET_ID = process.env.ASSET_ID; // Which asset is being sent from the fau
 const DROP_SIZE =  process.env.DROP_SIZE_X || 100; // how much of the given asset to transfer from the faucet
 const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
 
-let bintools = slopes.BinTools.getInstance();
+let bintools = avalanche.BinTools.getInstance();
 
-let ava = new slopes.Slopes(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
+let ava = new avalanche.Avalanche(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
 let avm = ava.AVM();
 
 let myKeychain = avm.keyChain();

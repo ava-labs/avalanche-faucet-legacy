@@ -49,8 +49,8 @@
     import {QrInput} from '@avalabs/vue_components';
     const Web3 = require('web3');
     import Big from 'big.js';
-    const slopes = require("slopes");
-    let bintools = slopes.BinTools.getInstance();
+    const avalanche = require("avalanche");
+    let bintools = avalanche.BinTools.getInstance();
 
 
     export default {
