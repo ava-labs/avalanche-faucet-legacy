@@ -25,7 +25,7 @@
 
 
                 <v-card-text v-show="state==='success'">
-                    <p>Transfer successful.</p>
+                    <p>Transfer successful</p>
                     <label style="font-weight: bold">Transaction ID</label>
                     <p>{{txId}}</p>
                     <v-btn @click="clear" depressed block>Start again</v-btn>
@@ -36,7 +36,7 @@
                     <v-alert type="error" text>
                         {{responseError}}
                         <br><br>
-                        <p>Oooops! Looks like something went wrong. Pleasse try again later..</p>
+                        <p>Oooops! Looks like something went wrong. Please try again later..</p>
                     </v-alert>
                     <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
@@ -127,7 +127,7 @@
                 // Must enter valid address
                 let isValidAddr = this.verifyAddress(this.address);
                 if(!isValidAddr){
-                    this.errors.push("Invalid address.");
+                    this.errors.push("Invalid address");
                     this.errAddress = true;
                 }
 

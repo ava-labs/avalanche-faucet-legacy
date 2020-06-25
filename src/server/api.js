@@ -21,7 +21,7 @@ router.post('/token', (req, res) => {
     if(!captchaResponse){
         res.json({
             status: 'error',
-            message: 'Invalid captcha.'
+            message: 'Invalid Captcha'
         });
         return;
     }
@@ -74,7 +74,7 @@ router.post('/token', (req, res) => {
                     }catch(e){
                         res.json({
                             status: 'error',
-                            message: 'Invalid Address.'
+                            message: 'Invalid Address'
                         });
                     }
                 }else{
@@ -87,7 +87,7 @@ router.post('/token', (req, res) => {
                         console.log(e);
                         res.json({
                             status: 'error',
-                            message: 'Invalid Address.'
+                            message: 'Invalid Address'
                         });
                     }
                 }
@@ -100,13 +100,13 @@ router.post('/token', (req, res) => {
             }else{
                 res.json({
                     status: 'error',
-                    message: 'Invalid Address.'
+                    message: 'Invalid Address'
                 });
             }
         }else{
             res.json({
                 status: 'error',
-                message: 'Invalid captcha.'
+                message: 'Invalid Captcha'
             });
         }
     });
