@@ -24,12 +24,8 @@ const app = express();
 app.use(helmet());
 
 
-
-
-
 // API
 beforeMiddleware(app);
-
 
 // Https rerouting
 app.use((req, res, next) => {
