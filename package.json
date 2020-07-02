@@ -19,6 +19,7 @@
     "dotenv": "^8.2.0",
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
+    "helmet": "^3.23.3",
     "morgan": "^1.9.1",
     "roboto-fontface": "*",
     "vue": "^2.6.10",

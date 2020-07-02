@@ -7,6 +7,8 @@ const { resolve } = require('path');
 const {CONFIG, avm} = require('./ava');
 const history = require('connect-history-api-fallback');
 const {beforeMiddleware} = require('./configure');
+const helmet = require("helmet");
+
 
 
 // VALUE CHECKING ####################################################
@@ -19,6 +21,7 @@ if(!CONFIG.CAPTCHA_SECRET){
 }
 
 const app = express();
+app.use(helmet());
 
 
 
@@ -38,6 +41,8 @@ app.use((req, res, next) => {
         res.redirect('https://' + req.headers.host + req.url);
     }
 });
+app.use(helmet.xssFilter());
+app.use(helmet.frameguard());
 
 // Serve static files
 const publicPath = resolve(__dirname, '../../dist');
