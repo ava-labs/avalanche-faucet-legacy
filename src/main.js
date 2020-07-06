@@ -7,8 +7,14 @@ import store from './store/index';
 import router from './router';
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@fortawesome/fontawesome-free/css/all.css'
+import VueAnalytics from 'vue-analytics'
+
 
 Vue.config.productionTip = false;
+
+Vue.use(VueAnalytics, {
+  id: 'UA-126268251-6'
+})
 
 new Vue({
   store,
