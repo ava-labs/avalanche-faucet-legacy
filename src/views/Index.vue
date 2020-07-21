@@ -187,7 +187,10 @@
             let query = this.$router.currentRoute.query;
             let addr = query['address'];
             if(addr){
-                this.address = addr;
+                // Check that it is indeed a valid address
+                if(this.verifyAddress(addr)){
+                    this.address = addr;
+                }
             }
             console.log(query);
 
