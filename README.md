@@ -1,4 +1,4 @@
-# AVA Faucet
+# AVAX Faucet
 
 There are two different layers in this project. The Node Express backend and the Vue.js frontend.
 
@@ -9,11 +9,11 @@ There are two different layers in this project. The Node Express backend and the
 
 ## Vue Application
 ### Installation
-1) Clone the repository ``git clone https://github.com/ava-labs/faucet-site.git``
-2) Go to the root directory `cd ava-faucet`
+1) Clone the repository ``git clone https://github.com/ava-labs/avax-faucet.git``
+2) Go to the root directory `cd avax-faucet`
 3) Install javascript dependencies with ``npm install``.
 4) Create a ``.env`` file by copying ``.env.example`` 
-5) Install Gecko, our AVA node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
+5) Install Gecko, our Avalanche node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
 
 ### ENV Files
 Variables beginning with ``VUE_APP_`` will get injected into the vue application.
@@ -23,19 +23,19 @@ Refer to ``.env.example``
 - ``AVA_IP`` The ip address of the Gecko jrpc node.
 - ``AVA_PORT`` The port of the Gecko jrpc node.
 - ``AVA_PROTOCOL`` Either ``http`` or ``https``
-- ``AVA_NETWORK_ID`` What is the network id of the AVA network you are connecting to.
-- ``AVA_CHAIN_ID`` The blockchain id of the AVA  Network you are connecting to.
+- ``AVA_NETWORK_ID`` What is the network id of the Avalanche network you are connecting to.
+- ``AVA_CHAIN_ID`` The blockchain id of the Avalanche  Network you are connecting to.
 - ``CAPTCHA_SECRET`` Your captcha secret from Google reCaptcha
 - ``VUE_APP_CAPTCHA_SITE_KEY`` Your public site captcha key from Google reCaptcha
-- ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVA asset id.
-- ``PRIVATE_KEY_X`` A private key for the X chain with funds in it. You can use the default for AVA tokens.
+- ``ASSET_ID`` The asset id of the asset the faucet will give. If not set, will default to AVAX asset id.
+- ``PRIVATE_KEY_X`` A private key for the X chain with funds in it. You can use the default for AVAX tokens.
 - ``PRIVATE_KEY_C`` A private key for the C chain with funds in it. Only needed for the transactions on the C chain.
-- ``DROP_SIZE_X`` How much nanoAvas is given from this faucet. Used by the X chain.
+- ``DROP_SIZE_X`` How much nanoAvax is given from this faucet. Used by the X chain.
 - ``DROP_SIZE_C`` How much wei is given from this faucet. Used by the C chain.
 
 ### Running The Project
 
-In order for the faucet to work, it needs the AVA network to operate on. 
+In order for the faucet to work, it needs the Avalanche network to operate on. 
 1) Make sure you have installed and able to run a Gecko node properly.
 2) All environment variables are correct and your private key has funds in it.
 2) Run the project with hot reloading ``npm run serve``
@@ -45,7 +45,7 @@ When you go to the website on your browser, you might get a warning saying
 
 # Node Express
 
-This backend is used to verify captchas and make a request to the AVA Network to issue tokens. The backend files are stored 
+This backend is used to verify captchas and make a request to the Avalanche Network to issue tokens. The backend files are stored 
 in the ``src/server`` directory.
 The node is automatically started with the ``npm run serve`` command but can be individually started with ``node src/server/index.js``
 
@@ -59,11 +59,11 @@ The node is automatically started with the ``npm run serve`` command but can be 
 
 # Browser Support
 
-We suggest using Google Chrome to view the AVA Faucet website.
+We suggest using Google Chrome to view the AVAX Faucet website.
 
 ### Firefox and https
 
-Firefox does not allow https requests to localhost. But the AVA Faucet uses https by default, so we will need to change this to http. Make this switch by editing the `vue.config.json` file in the root directory and change 
+Firefox does not allow https requests to localhost. But the AVAX Faucet uses https by default, so we will need to change this to http. Make this switch by editing the `vue.config.json` file in the root directory and change 
 
 ```
 devServer: {

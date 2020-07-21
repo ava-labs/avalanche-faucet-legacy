@@ -4,7 +4,7 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
                 <v-card-title>
-                        The AVA Faucet
+                        The AVAX Faucet
                 </v-card-title>
 
 
@@ -225,9 +225,9 @@
             },
             assetName(){
                 if(this.assetType === 'C'){
-                    return 'C-AVA';
+                    return 'C-AVAX';
                 }
-                return 'nAVA';
+                return 'nAVAX';
             },
 
             dropSize(){
