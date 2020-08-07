@@ -1,6 +1,4 @@
 const avalanche = require("avalanche");
-// const BN = require('bn.js');
-// const Buffer = require('buffer').Buffer;
 
 const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || 9650;
@@ -45,11 +43,11 @@ console.log(CONFIG);
 async function checkAssetId(){
     if(!CONFIG.ASSET_ID){
         let res = await avm.getAssetDescription('AVA');
-        CONFIG.ASSET_ID = bintools.avaSerialize(res.assetID);
+        CONFIG.ASSET_ID = bintools.cb58Encode(res.assetID);
         console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
     }else{
         let res = await avm.getAssetDescription(CONFIG.ASSET_ID);
-        CONFIG.ASSET_ID = bintools.avaSerialize(res.assetID);
+        CONFIG.ASSET_ID = bintools.cb58Encode(res.assetID);
         console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
     }
 }
