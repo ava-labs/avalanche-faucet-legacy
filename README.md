@@ -1,4 +1,4 @@
-# AVAX Faucet
+# Avalanche Faucet
 
 There are two different layers in this project. The Node Express backend and the Vue.js frontend.
 
