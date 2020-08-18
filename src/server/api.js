@@ -127,14 +127,17 @@ async function sendTx(addr){
 
     // If balance is lower than drop size, throw an insufficient funds error
     let balance = await avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID);
-    if(sendAmount.gt(balance)){
+    let balanceVal = new BN(balance.balance);
+
+    console.log(balanceVal);
+    if(sendAmount.gt(balanceVal)){
         return {
             status: 'error',
             message: 'Insufficient funds to create the transaction. Please file an issues on the repo: https://github.com/ava-labs/faucet-site'
         }
     }
     // console.log(avm.getBlockchainID());
-    let unsigned_tx = await avm.buildBaseTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
+    let unsigned_tx = await avm.buildBaseTx(utxos, sendAmount, CONFIG.ASSET_ID,[addr], myAddresses, myAddresses, ).catch(err => {
         console.log(err);
     });
 

@@ -16,7 +16,11 @@ const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
 let bintools = avalanche.BinTools.getInstance();
 
 let ava = new avalanche.Avalanche(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
-let avm = ava.AVM();
+let avm = ava.XChain();
+// let pChain = ava.PChain();
+//     pChain.getBlockchains().then(res => {
+//         console.log(res)
+//     });
 
 let myKeychain = avm.keyChain();
 
