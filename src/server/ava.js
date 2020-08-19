@@ -24,7 +24,7 @@ let avm = ava.XChain();
 
 
 let myKeychain = avm.keyChain();
-let keypair = myKeychain.getKey(myKeychain.importKey(PK_X));
+let keypair = myKeychain.importKey(PK_X);
 const FAUCET_ADDRESS = keypair.getAddressString();
 
 
