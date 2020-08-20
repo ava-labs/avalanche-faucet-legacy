@@ -74,7 +74,7 @@ router.post('/token', (req, res) => {
                     }catch(e){
                         res.json({
                             status: 'error',
-                            message: 'Invalid Address'
+                            message: 'Failed to send transaction.'
                         });
                     }
                 }else{

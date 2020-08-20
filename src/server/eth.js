@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 
-
+import { BN } from 'avalanche';
 // Get constants
 
 const PK = process.env.PRIVATE_KEY_C; // The private key that holds the given assets to supply the faucet
@@ -9,6 +9,8 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
+
+const GAS_PRICE = "20000000000";
 
 const CONFIG_C = {
   PK: PK,
@@ -35,7 +37,7 @@ web3.eth.getBalance(account.address).then(res => {
 async function sendAvaC(receiver){
     const txConfig = {
         from: account.address,
-        gasPrice: "20000000000",
+        gasPrice: GAS_PRICE,
         gas: "21000",
         to: receiver,
         value: txAmount,
