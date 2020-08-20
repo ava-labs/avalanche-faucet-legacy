@@ -74,7 +74,7 @@ router.post('/token', (req, res) => {
                     }catch(e){
                         res.json({
                             status: 'error',
-                            message: 'Invalid Address'
+                            message: 'Failed to send transaction.'
                         });
                     }
                 }else{
@@ -127,14 +127,17 @@ async function sendTx(addr){
 
     // If balance is lower than drop size, throw an insufficient funds error
     let balance = await avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID);
-    if(sendAmount.gt(balance)){
+    let balanceVal = new BN(balance.balance);
+
+    if(sendAmount.gt(balanceVal)){
+        console.log("Insufficient funds. Remaining AVAX: ",balanceVal.toString());
         return {
             status: 'error',
             message: 'Insufficient funds to create the transaction. Please file an issues on the repo: https://github.com/ava-labs/faucet-site'
         }
     }
     // console.log(avm.getBlockchainID());
-    let unsigned_tx = await avm.buildBaseTx(utxos, sendAmount, [addr], myAddresses, myAddresses, CONFIG.ASSET_ID).catch(err => {
+    let unsigned_tx = await avm.buildBaseTx(utxos, sendAmount, CONFIG.ASSET_ID,[addr], myAddresses, myAddresses ).catch(err => {
         console.log(err);
     });
 

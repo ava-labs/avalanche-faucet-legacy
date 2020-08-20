@@ -57,7 +57,8 @@ app.listen(port, () => {
     if(CONFIG.ASSET_ID){
         console.log("Asset Id: \t",CONFIG.ASSET_ID);
         avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then(res => {
-            console.log(`(X) Available Balance: ${res.toString()}`);
+            console.log(res);
+            // console.log(`(X) Available Balance: ${res.toString()}`);
         });
     }
 });
