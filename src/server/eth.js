@@ -1,6 +1,5 @@
 const Web3 = require('web3');
 
-import { BN } from 'avalanche';
 // Get constants
 
 const PK = process.env.PRIVATE_KEY_C; // The private key that holds the given assets to supply the faucet
