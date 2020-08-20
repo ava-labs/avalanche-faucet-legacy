@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@avalabs/vue_components": "^0.2.1",
-    "avalanche": "^2.0.1",
+    "avalanche": "^2.4.0",
     "axios": "^0.19.0",
     "bn.js": "^4.11.8",
     "body-parser": "^1.19.0",
