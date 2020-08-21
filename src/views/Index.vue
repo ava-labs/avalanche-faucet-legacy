@@ -11,7 +11,7 @@
                 <v-card-text v-show="state==='form'">
                     <div>
                         <label>Address (Where to send the tokens.)</label>
-                        <qr-input v-model="address"></qr-input>
+                        <qr-input v-model="address" placeholder="Address"></qr-input>
                     </div>
                     <div ref="captcha" class="captcha"></div>
                     <div class="errors">
