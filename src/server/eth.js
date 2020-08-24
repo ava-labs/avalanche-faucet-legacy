@@ -9,7 +9,7 @@ const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
 
-const GAS_PRICE = "20000000000";
+const GAS_PRICE = "100000000000";
 
 const CONFIG_C = {
   PK: PK,
