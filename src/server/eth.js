@@ -38,10 +38,10 @@ web3.eth.getBalance(account.address).then(res => {
 // !!! Receiver is given in 0x format
 async function sendAvaC(receiver){
 
-    let pendingTx = await web3.eth.getTransactionCount(account.address, 'pending');
-    let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
-    let txDiff = pendingTx - latestTx;
-    let nonce = await web3.eth.getTransactionCount(account.address);
+    // let pendingTx = await web3.eth.getTransactionCount(account.address, 'pending');
+    // let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
+    // let txDiff = pendingTx - latestTx;
+    // let nonce = await web3.eth.getTransactionCount(account.address);
         // nonce++;
     // let gasPrice = new BN(GAS_PRICE)
     // let m   gasPrice.div(new BN(10))
@@ -55,7 +55,7 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
-        nonce: nonce+txDiff
+        // nonce: nonce+txDiff
     };
 
     // if(nonceOffset){
