@@ -87,23 +87,25 @@ router.post('/token', (req, res) => {
                 }
 
                 try{
-                    let err, receipt = await sendAvaC(hexAddr);
+                    let receipt = await sendAvaC(hexAddr);
+                    onsuccess(res, receipt.transactionHash);
 
-                    console.log(err);
-                    console.log(receipt);
-
-                    if(receipt){
-                        onsuccess(res, receipt.transactionHash);
-                    }else if(err){
-                        throw err;
-                        // let err2, receipt2 = await sendAvaC(hexAddr, 1);
-                        //
-                        // if(receipt2){
-                        //     onsuccess(res, receipt2.transactionHash);
-                        // }else{
-                        //     throw err2;
-                        // }
-                    }
+                    // console.log(err);
+                    // console.log(receipt);
+                    //
+                    // if(receipt){
+                    // }
+                    //
+                    // else if(err){
+                    //     throw err;
+                    //     // let err2, receipt2 = await sendAvaC(hexAddr, 1);
+                    //     //
+                    //     // if(receipt2){
+                    //     //     onsuccess(res, receipt2.transactionHash);
+                    //     // }else{
+                    //     //     throw err2;
+                    //     // }
+                    // }
                 }catch(e){
                     console.log(e);
                     res.json({

@@ -38,6 +38,10 @@ web3.eth.getTransactionCount(account.address).then(res => {
 // !!! Receiver is given in 0x format
 async function sendAvaC(receiver){
 
+    // let gasPrice = new BN(GAS_PRICE)
+    // let m   gasPrice.div(new BN(10))
+
+
     const txConfig = {
         from: account.address,
         gasPrice: GAS_PRICE,
@@ -55,8 +59,15 @@ async function sendAvaC(receiver){
 
     let signedTx = await account.signTransaction(txConfig);
 
+    let err, receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+    console.log(receipt);
+
+    if(!err) return receipt;
+    console.log(err);
+    throw err;
     // Send the transaction
-    return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    // return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 }
 
 module.exports = {
