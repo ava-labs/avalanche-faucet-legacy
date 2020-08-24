@@ -66,38 +66,72 @@ router.post('/token', (req, res) => {
             else if(address[0] === 'C'){
 
                 let ethAddr = address.substring(2);
-                let result;
+                // let result;
 
+                let hexAddr;
                 if(ethAddr.substring(0,2) === '0x'){
-                    try{
-                        result = await sendAvaC(ethAddr).on('error',console.log);
-                        console.log(result);
-                    }catch(e){
-                        res.json({
-                            status: 'error',
-                            message: 'Failed to send transaction.'
-                        });
-                    }
+                    hexAddr = ethAddr;
                 }else{
                     try{
                         let deserial = bintools.cb58Decode(ethAddr);
                         let hex = deserial.toString('hex');
-                        result = await sendAvaC(`0x${hex}`);
-                        console.log(result)
+                        hexAddr = hex;
                     }catch(e){
                         console.log(e);
                         res.json({
                             status: 'error',
                             message: 'Invalid Address'
                         });
+                        return;
                     }
                 }
 
-                console.log(`(C) Sent a drop with tx hash: ${result.transactionHash} to ${address}`);
-                res.json({
-                    status: 'success',
-                    message: result.transactionHash
-                });
+                try{
+                    let err, receipt = await sendAvaC(hexAddr);
+
+                    // console.log(err);
+                    // console.log(receipt);
+
+                    if(receipt){
+                        res.json({
+                            status: 'success',
+                            message: receipt.transactionHash
+                        });
+                    }else{
+                        throw err;
+                    }
+
+                    // res.on('receipt', receipt => {
+                    //     console.log(receipt);
+                    // });
+                    // res.then((err, res) => {
+                    //     console.log(err);
+                    //     console.log(res);
+                    // })
+                    // res.on('error', err =>{
+                    //     console.log(err);
+                    // });
+                    // res.on('receipt', receipt =>{
+                    //     console.log(receipt);
+                    // });
+                    // .on('error', (err) => {
+                    //     console.log(err);
+                    //     throw ""
+                    // }).on('receipt', (receipt) => {
+                    //     console.log(`(C) Sent a drop with tx hash: ${receipt.transactionHash} to ${address}`);
+                    //     res.json({
+                    //         status: 'success',
+                    //         message: receipt.transactionHash
+                    //     });
+                    //     return;
+                    // });
+                }catch(e){
+                    console.log(e);
+                    res.json({
+                        status: 'error',
+                        message: 'Failed to send transaction.'
+                    });
+                }
             }else{
                 res.json({
                     status: 'error',

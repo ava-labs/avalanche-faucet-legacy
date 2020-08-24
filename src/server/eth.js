@@ -33,20 +33,29 @@ web3.eth.getBalance(account.address).then(res => {
 
 
 // !!! Receiver is given in 0x format
-async function sendAvaC(receiver){
+async function sendAvaC(receiver, nonce){
+    // let nonce = await web3.eth.getTransactionCount(account.address)
+    //     nonce += 1;
+    // console.log(nonce);
+
     const txConfig = {
         from: account.address,
         gasPrice: GAS_PRICE,
         gas: "21000",
         to: receiver,
         value: txAmount,
-        data: ""
+        data: "",
+        // nonce: nonce
     };
+
+    if(nonce){
+        txConfig.nonce = nonce;
+    }
 
     let signedTx = await account.signTransaction(txConfig);
 
     // Send the transaction
-    return  web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 }
 
 module.exports = {
