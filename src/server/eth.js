@@ -30,10 +30,13 @@ web3.eth.getBalance(account.address).then(res => {
     console.log("(C) Droplet size: \t",txAmount);
 });
 
-
+let nonce = 0;
+web3.eth.getTransactionCount(account.address).then(res => {
+    nonce = res;
+})
 
 // !!! Receiver is given in 0x format
-async function sendAvaC(receiver, nonceOffset){
+async function sendAvaC(receiver){
 
     const txConfig = {
         from: account.address,
@@ -42,12 +45,13 @@ async function sendAvaC(receiver, nonceOffset){
         to: receiver,
         value: txAmount,
         data: "",
+        nonce: nonce++
     };
 
-    if(nonceOffset){
-        let nonce = await web3.eth.getTransactionCount(account.address)
-        txConfig.nonce = nonce + nonceOffset;
-    }
+    // if(nonceOffset){
+    //     let nonce = await web3.eth.getTransactionCount(account.address)
+    //     txConfig.nonce = nonce + nonceOffset;
+    // }
 
     let signedTx = await account.signTransaction(txConfig);
 
