@@ -70,7 +70,7 @@ router.post('/token', (req, res) => {
 
                 if(ethAddr.substring(0,2) === '0x'){
                     try{
-                        result = await sendAvaC(ethAddr);
+                        result = await sendAvaC(ethAddr).on('error',console.log);
                         console.log(result);
                     }catch(e){
                         res.json({
