@@ -93,38 +93,16 @@ router.post('/token', (req, res) => {
                     // console.log(receipt);
 
                     if(receipt){
-                        res.json({
-                            status: 'success',
-                            message: receipt.transactionHash
-                        });
-                    }else{
-                        throw err;
-                    }
+                        onsuccess(res, receipt.transactionHash);
+                    }else if(err){
+                        let err2, receipt2 = await sendAvaC(hexAddr, 1);
 
-                    // res.on('receipt', receipt => {
-                    //     console.log(receipt);
-                    // });
-                    // res.then((err, res) => {
-                    //     console.log(err);
-                    //     console.log(res);
-                    // })
-                    // res.on('error', err =>{
-                    //     console.log(err);
-                    // });
-                    // res.on('receipt', receipt =>{
-                    //     console.log(receipt);
-                    // });
-                    // .on('error', (err) => {
-                    //     console.log(err);
-                    //     throw ""
-                    // }).on('receipt', (receipt) => {
-                    //     console.log(`(C) Sent a drop with tx hash: ${receipt.transactionHash} to ${address}`);
-                    //     res.json({
-                    //         status: 'success',
-                    //         message: receipt.transactionHash
-                    //     });
-                    //     return;
-                    // });
+                        if(receipt2){
+                            onsuccess(res, receipt2.transactionHash);
+                        }else{
+                            throw err2;
+                        }
+                    }
                 }catch(e){
                     console.log(e);
                     res.json({
@@ -148,6 +126,13 @@ router.post('/token', (req, res) => {
 });
 
 
+
+function onsuccess(res, txHash){
+    res.json({
+        status: 'success',
+        message: txHash
+    });
+}
 
 
 
