@@ -71,6 +71,7 @@ router.post('/token', (req, res) => {
                 if(ethAddr.substring(0,2) === '0x'){
                     try{
                         result = await sendAvaC(ethAddr);
+                        console.log(result);
                     }catch(e){
                         res.json({
                             status: 'error',
@@ -79,10 +80,10 @@ router.post('/token', (req, res) => {
                     }
                 }else{
                     try{
-                        let deserial = bintools.avaDeserialize(ethAddr);
+                        let deserial = bintools.cb58Decode(ethAddr);
                         let hex = deserial.toString('hex');
-
                         result = await sendAvaC(`0x${hex}`);
+                        console.log(result)
                     }catch(e){
                         console.log(e);
                         res.json({
