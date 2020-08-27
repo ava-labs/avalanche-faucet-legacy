@@ -8,9 +8,7 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
-
-// const GAS_PRICE = "100000000000";
-const GAS_PRICE = "1";
+const GAS_PRICE = "47000000000";
 
 const CONFIG_C = {
   PK: PK,
@@ -39,10 +37,12 @@ web3.eth.getBalance(account.address).then(res => {
 // !!! Receiver is given in 0x format
 async function sendAvaC(receiver){
 
-    // let pendingTx = await web3.eth.getTransactionCount(account.address, 'pending');
-    // let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
-    // let txDiff = pendingTx - latestTx;
-    // let nonce = await web3.eth.getTransactionCount(account.address);
+    let pendingTx = await web3.eth.getTransactionCount(account.address, 'pending');
+    let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
+    let txDiff = pendingTx - latestTx;
+    let nonce = await web3.eth.getTransactionCount(account.address);
+    console.log(pendingTx, latestTx, nonce);
+    nonce += txDiff;
         // nonce++;
     // let gasPrice = new BN(GAS_PRICE)
     // let m   gasPrice.div(new BN(10))
@@ -56,6 +56,7 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
+        // nonce: nonce
     };
 
     let signedTx = await account.signTransaction(txConfig);
