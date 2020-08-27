@@ -9,7 +9,8 @@ const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
 
-const GAS_PRICE = "100000000000";
+// const GAS_PRICE = "100000000000";
+const GAS_PRICE = "1";
 
 const CONFIG_C = {
   PK: PK,
@@ -55,13 +56,7 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
-        // nonce: nonce+txDiff
     };
-
-    // if(nonceOffset){
-    //     let nonce = await web3.eth.getTransactionCount(account.address)
-    //     txConfig.nonce = nonce + nonceOffset;
-    // }
 
     let signedTx = await account.signTransaction(txConfig);
     let err, receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);

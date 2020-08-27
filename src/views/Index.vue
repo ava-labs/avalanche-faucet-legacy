@@ -36,7 +36,7 @@
                     <v-alert type="error" text>
                         {{responseError}}
                         <br><br>
-                        <p>Oooops! Looks like something went wrong. Please try again later..</p>
+                        <p>Oooops! Looks like something went wrong. Please try again later.</p>
                     </v-alert>
                     <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
