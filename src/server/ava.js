@@ -7,7 +7,7 @@ const AVA_PORT = process.env.AVA_PORT || 9650;
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "https";
 const AVA_NETWORK_ID = process.env.AVA_NETWORK_ID || "12345";
 
-let AVA_CHAIN_ID = process.env.AVA_CHAIN_ID || 'avm';
+let AVA_CHAIN_ID = process.env.AVA_CHAIN_ID || 'X';
 
 const PK_X =  process.env.PRIVATE_KEY_X; // The private key that holds the given assets to supply the faucet
 const PK_C =  process.env.PRIVATE_KEY_C; // The private key that holds the given assets to supply the faucet

@@ -27,12 +27,8 @@ let account = web3.eth.accounts.privateKeyToAccount(PK);
 web3.eth.getBalance(account.address).then(res => {
     console.log("(C) Available Balance: ", res);
     console.log("(C) Droplet size: \t",txAmount);
+    console.log(`(C) Address: `,account.address)
 });
-
-// let nonce = 0;
-// web3.eth.getTransactionCount(account.address).then(res => {
-//     nonce = res;
-// })
 
 // !!! Receiver is given in 0x format
 async function sendAvaC(receiver){
@@ -41,12 +37,7 @@ async function sendAvaC(receiver){
     let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
     let txDiff = pendingTx - latestTx;
     let nonce = await web3.eth.getTransactionCount(account.address);
-    console.log(pendingTx, latestTx, nonce);
-    nonce += txDiff;
-        // nonce++;
-    // let gasPrice = new BN(GAS_PRICE)
-    // let m   gasPrice.div(new BN(10))
-    // console.log(pendingTx,latestTx);
+        nonce += txDiff;
 
 
     const txConfig = {
@@ -56,13 +47,12 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
-        // nonce: nonce
+        nonce: nonce
     };
 
     let signedTx = await account.signTransaction(txConfig);
     let err, receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    // console.log(receipt);
 
     if(!err) return receipt;
     console.log(err);
