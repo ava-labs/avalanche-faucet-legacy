@@ -47,7 +47,8 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
-        nonce: nonce
+        // nonce: nonce,
+        // chain: "43110"
     };
 
     let signedTx = await account.signTransaction(txConfig);
