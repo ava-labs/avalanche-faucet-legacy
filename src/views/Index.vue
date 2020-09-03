@@ -2,7 +2,7 @@
     <v-container fill-height >
         <v-row justify="center" align="center">
             <v-card class="card" :loading="isAjax">
-                <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
+                <v-img src="/og_banner.png" height="140"></v-img>
                 <v-card-title>
                         The AVAX Faucet
                 </v-card-title>
@@ -36,7 +36,7 @@
                     <v-alert type="error" text>
                         {{responseError}}
                         <br><br>
-                        <p>Oooops! Looks like something went wrong. Please try again later..</p>
+                        <p>Oooops! Looks like something went wrong. Please try again later.</p>
                     </v-alert>
                     <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
