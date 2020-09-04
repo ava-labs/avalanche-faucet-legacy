@@ -2,7 +2,7 @@
     <v-container fill-height >
         <v-row justify="center" align="center">
             <v-card class="card" :loading="isAjax">
-                <v-img src="@/assets/ava_labs.jpeg" height="140"></v-img>
+                <v-img src="/og_banner.png" height="140"></v-img>
                 <v-card-title>
                         The AVAX Faucet
                 </v-card-title>
