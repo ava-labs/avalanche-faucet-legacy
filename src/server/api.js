@@ -66,37 +66,53 @@ router.post('/token', (req, res) => {
             else if(address[0] === 'C'){
 
                 let ethAddr = address.substring(2);
-                let result;
+                // let result;
 
+                let hexAddr;
                 if(ethAddr.substring(0,2) === '0x'){
-                    try{
-                        result = await sendAvaC(ethAddr);
-                    }catch(e){
-                        res.json({
-                            status: 'error',
-                            message: 'Failed to send transaction.'
-                        });
-                    }
+                    hexAddr = ethAddr;
                 }else{
                     try{
-                        let deserial = bintools.avaDeserialize(ethAddr);
+                        let deserial = bintools.cb58Decode(ethAddr);
                         let hex = deserial.toString('hex');
-
-                        result = await sendAvaC(`0x${hex}`);
+                        hexAddr = hex;
                     }catch(e){
                         console.log(e);
                         res.json({
                             status: 'error',
                             message: 'Invalid Address'
                         });
+                        return;
                     }
                 }
 
-                console.log(`(C) Sent a drop with tx hash: ${result.transactionHash} to ${address}`);
-                res.json({
-                    status: 'success',
-                    message: result.transactionHash
-                });
+                try{
+                    let receipt = await sendAvaC(hexAddr);
+                    onsuccess(res, receipt.transactionHash);
+
+                    // console.log(err);
+                    // console.log(receipt);
+                    //
+                    // if(receipt){
+                    // }
+                    //
+                    // else if(err){
+                    //     throw err;
+                    //     // let err2, receipt2 = await sendAvaC(hexAddr, 1);
+                    //     //
+                    //     // if(receipt2){
+                    //     //     onsuccess(res, receipt2.transactionHash);
+                    //     // }else{
+                    //     //     throw err2;
+                    //     // }
+                    // }
+                }catch(e){
+                    console.log(e);
+                    res.json({
+                        status: 'error',
+                        message: 'Failed to send transaction.'
+                    });
+                }
             }else{
                 res.json({
                     status: 'error',
@@ -113,6 +129,13 @@ router.post('/token', (req, res) => {
 });
 
 
+
+function onsuccess(res, txHash){
+    res.json({
+        status: 'success',
+        message: txHash
+    });
+}
 
 
 
