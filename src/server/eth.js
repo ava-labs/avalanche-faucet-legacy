@@ -48,16 +48,7 @@ async function getAcceptedTxCount(){
 
 // !!! Receiver is given in 0x format
 async function sendAvaC(receiver){
-
-    // let pendingTx = await web3.eth.getTransactionCount(account.address, 'pending');
     let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
-    // let acceptedTx = await getAcceptedTxCount();
-
-    // let txDiff = pendingTx - acceptedTx;
-    // let nonce = await web3.eth.getTransactionCount(account.address);
-    //     nonce += txDiff;
-
-    console.log(latestTx);
 
     const txConfig = {
         from: account.address,
@@ -66,7 +57,7 @@ async function sendAvaC(receiver){
         to: receiver,
         value: txAmount,
         data: "",
-        nonce: latestTx+1,
+        nonce: latestTx,
     };
 
     let signedTx = await account.signTransaction(txConfig);
@@ -76,8 +67,6 @@ async function sendAvaC(receiver){
     if(!err) return receipt;
     console.log(err);
     throw err;
-    // Send the transaction
-    // return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 }
 
 module.exports = {
