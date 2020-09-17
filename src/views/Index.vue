@@ -66,8 +66,8 @@
                 responseError: '',
                 captchaResponse: '',
                 state: 'form', // form || success
-                dropSizeX: 0,
-                dropSizeC: 0,
+                dropSizeX: Big(0),
+                dropSizeC: Big(0),
                 txId: "",
             }
         },
@@ -175,7 +175,7 @@
             let parent = this;
 
             axios.get('/api/howmuch').then(res => {
-                let sizeX = parseInt(res.data.dropSizeX);
+                let sizeX = Big(res.data.dropSizeX);
                 let sizeC = Big(res.data.dropSizeC);
                 parent.dropSizeX = sizeX;
                 parent.dropSizeC = sizeC;
@@ -230,15 +230,16 @@
                 if(this.assetType === 'C'){
                     return 'C-AVAX';
                 }
-                return 'nAVAX';
+                return 'AVAX';
             },
 
             dropSize(){
                 if(this.assetType === 'C'){
                     // ETH has 18 decimal points
                     return (this.dropSizeC.div(Math.pow(10,18))).toFixed(4);
+                }else{
+                    return this.dropSizeX.div(Math.pow(10,9)).toString();
                 }
-                return this.dropSizeX;
             }
         },
         destroyed() {
