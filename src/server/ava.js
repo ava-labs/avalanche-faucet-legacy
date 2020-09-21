@@ -20,7 +20,15 @@ let bintools = avalanche.BinTools.getInstance();
 
 let ava = new avalanche.Avalanche(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
 let avm = ava.XChain();
-    avm.setFee(new BN(AVAX_FEE));
+    avm.setTxFee(new BN(AVAX_FEE));
+
+let info = ava.Info();
+
+
+let chainIdX = info.getBlockchainID('X')
+avm.refreshBlockchainID(chainIdX);
+avm.setBlockchainAlias('X');
+// avm.setB
 
 
 let myKeychain = avm.keyChain();
