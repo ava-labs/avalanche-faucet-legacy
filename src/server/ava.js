@@ -56,7 +56,7 @@ console.log(CONFIG);
 function printXInfo(){
     avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then(res => {
         let balance =  res.balance;
-        let fee = avm.getFee();
+        let fee = avm.getTxFee();
 
         console.log("(X) Available Balance: ",balance);
         console.log("(X) Droplet size: \t",CONFIG.DROP_SIZE);
