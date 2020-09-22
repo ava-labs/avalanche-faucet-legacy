@@ -9,7 +9,7 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
-const GAS_PRICE = "47000000000";
+const GAS_PRICE = "500000000000";
 
 const CONFIG_C = {
   PK: PK,
