@@ -4,7 +4,7 @@
             <v-card class="card" :loading="isAjax">
                 <v-img src="/og_banner.png" height="140"></v-img>
                 <v-card-title>
-                        The AVAX Faucet
+                    AVAX Fuji Testnet Faucet
                 </v-card-title>
 
 
