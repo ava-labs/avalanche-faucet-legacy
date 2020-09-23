@@ -143,7 +143,7 @@ function onsuccess(res, txHash){
 async function sendTx(addr){
     let myAddresses = [CONFIG.FAUCET_ADDRESS];
     // console.log(myAddresses);
-    let utxos = await avm.getUTXOs(myAddresses);
+    let utxos = (await avm.getUTXOs(myAddresses)).utxos;
     // console.log(utxos.getAllUTXOs());
     let sendAmount = new BN(CONFIG.DROP_SIZE);
 

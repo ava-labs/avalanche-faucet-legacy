@@ -25,9 +25,11 @@ let avm = ava.XChain();
 let info = ava.Info();
 
 
-let chainIdX = info.getBlockchainID('X')
-avm.refreshBlockchainID(chainIdX);
-avm.setBlockchainAlias('X');
+info.getBlockchainID('X').then((res) => {
+    avm.refreshBlockchainID(res);
+    avm.setBlockchainAlias('X');
+})
+
 // avm.setB
 
 
