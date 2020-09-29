@@ -160,13 +160,15 @@ async function sendTx(addr){
         }
     }
     // console.log(avm.getBlockchainID());
+    let memo = bintools.stringToBuffer("Faucet drip");
     let unsigned_tx = await avm.buildBaseTx(
         utxos,
         sendAmount,
         CONFIG.ASSET_ID,
         [addr],
         myAddresses,
-        myAddresses
+        myAddresses,
+        memo
     ).catch(err => {
         console.log(err);
     });
