@@ -53,6 +53,7 @@
     let bintools = avalanche.BinTools.getInstance();
 
 
+
     export default {
         components: {
             QrInput
@@ -110,6 +111,10 @@
                     }
                 }
 
+                // Check if EVM address
+                if(Web3.utils.isAddress(addr)){
+                    return true
+                }
                 return false;
             },
             onSubmit(){

@@ -2,6 +2,8 @@ const {CONFIG, avm, bintools} = require('./ava');
 const axios = require('axios').default;
 const {sendAvaC, CONFIG_C} = require("./eth");
 const BN = require('bn.js');
+const Web3 = require("web3");
+
 // const AVA = require('./ava');
 var router = require('express').Router();
 
@@ -89,23 +91,6 @@ router.post('/token', (req, res) => {
                 try{
                     let receipt = await sendAvaC(hexAddr);
                     onsuccess(res, receipt.transactionHash);
-
-                    // console.log(err);
-                    // console.log(receipt);
-                    //
-                    // if(receipt){
-                    // }
-                    //
-                    // else if(err){
-                    //     throw err;
-                    //     // let err2, receipt2 = await sendAvaC(hexAddr, 1);
-                    //     //
-                    //     // if(receipt2){
-                    //     //     onsuccess(res, receipt2.transactionHash);
-                    //     // }else{
-                    //     //     throw err2;
-                    //     // }
-                    // }
                 }catch(e){
                     console.log(e);
                     res.json({
@@ -113,6 +98,9 @@ router.post('/token', (req, res) => {
                         message: 'Failed to send transaction.'
                     });
                 }
+            }else if(Web3.utils.isAddress(address)){
+                let receipt = await sendAvaC(address);
+                onsuccess(res, receipt.transactionHash);
             }else{
                 res.json({
                     status: 'error',
