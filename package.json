@@ -11,7 +11,7 @@
   "dependencies": {
     "@avalabs/vue_components": "^0.6.2",
     "avalanche": "3.0.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bn.js": "^4.11.8",
     "body-parser": "^1.19.0",
     "connect-history-api-fallback": "^1.6.0",
