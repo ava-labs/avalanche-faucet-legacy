@@ -3,7 +3,7 @@
 There are two different layers in this project. The Node Express backend and the Vue.js frontend.
 
 ## Requirements
-- Recent version of npm (6.13.4)
+- Yarn (https://classic.yarnpkg.com/en/docs/install/#mac-stable)
 - Node `v15.6.0` or greater
 - Google reCaptcha keys for **reCaptcha v2** with **"I'm not a robot" Checkbox**. Make sure to have 'localhost' listed in the domains. (https://www.google.com/recaptcha/intro/v3.html)
 
@@ -11,9 +11,9 @@ There are two different layers in this project. The Node Express backend and the
 ### Installation
 1) Clone the repository ``git clone https://github.com/ava-labs/avalanche-faucet.git``
 2) Go to the root directory `cd avalanche-faucet`
-3) Install javascript dependencies with ``npm install``.
+3) Install javascript dependencies with ``yarn install``.
 4) Create a ``.env`` file by copying ``.env.example`` 
-5) Install Gecko, our Avalanche node client written in Golang to spin up a network (https://github.com/ava-labs/gecko). 
+5) Install AvalancheGo, our Avalanche node client written in Golang to spin up a network (https://github.com/ava-labs/avalanchego). 
 
 ### ENV Files
 Variables beginning with ``VUE_APP_`` will get injected into the vue application.
@@ -38,7 +38,7 @@ Refer to ``.env.example``
 In order for the faucet to work, it needs the Avalanche network to operate on. 
 1) Make sure you have installed and able to run a Gecko node properly.
 2) All environment variables are correct and your private key has funds in it.
-2) Run the project with hot reloading ``npm run serve``
+2) Run the project with hot reloading ``yarn serve``
 
 When you go to the website on your browser, you might get a warning saying 
 'Site is not secure'. This is because we are signing our own SSL Certificates. Please ignore and continue to the website.
@@ -47,11 +47,11 @@ When you go to the website on your browser, you might get a warning saying
 
 This backend is used to verify captchas and make a request to the Avalanche Network to issue tokens. The backend files are stored 
 in the ``src/server`` directory.
-The node is automatically started with the ``npm run serve`` command but can be individually started with ``node src/server/index.js``
+The node is automatically started with the ``yarn serve`` command but can be individually started with ``node src/server/index.js``
 
 ## Deployment
  1) Setup environment variables for production
- 2) Compile and minify to have a production ready application with ``npm run build``. 
+ 2) Compile and minify to have a production ready application with ``yarn build``. 
  3) Run the node backend by running ``node src/server/index.js``.
 
 
@@ -79,7 +79,7 @@ devServer: {
 },
 ```
 
-and run `npm run serve` to reflect the change.
+and run `yarn serve` to reflect the change.
 
 
 ### Query Parameters
