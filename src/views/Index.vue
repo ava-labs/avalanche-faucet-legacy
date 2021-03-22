@@ -20,7 +20,7 @@
                     <v-alert type="error" dense outlined>
                         This is a beta faucet. Funds are not real.
                     </v-alert>
-                    <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} {{assetName}}</v-btn>
+                    <v-btn class="submit" @click="onSubmit" block :loading="isAjax" depressed :disabled="!canSubmit">REQUEST {{dropSize}} AVAX</v-btn>
                 </v-card-text>
 
 
@@ -227,23 +227,20 @@
             // either X for x-chain or C for c-chain, or null if none
             assetType(){
                 if(this.verifyAddress(this.address)){
+                    if(this.address.substring(0,2) === '0x'){
+                        return 'C'
+                    }
                     return this.address[0];
                 }
                 return null;
-            },
-            assetName(){
-                if(this.assetType === 'C'){
-                    return 'C-AVAX';
-                }
-                return 'AVAX';
             },
 
             dropSize(){
                 if(this.assetType === 'C'){
                     // ETH has 18 decimal points
-                    return (this.dropSizeC.div(Math.pow(10,18))).toFixed(4);
+                    return (this.dropSizeC.div(Math.pow(10,18))).toLocaleString();
                 }else{
-                    return this.dropSizeX.div(Math.pow(10,9)).toString();
+                    return this.dropSizeX.div(Math.pow(10,9)).toLocaleString();
                 }
             }
         },
