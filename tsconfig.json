@@ -7,7 +7,9 @@
     // if using webpack 2+ or rollup, to leverage tree shaking:
     "module": "ES6",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "paths": {
     "@/*": [

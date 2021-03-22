@@ -46,13 +46,13 @@ When you go to the website on your browser, you might get a warning saying
 # Node Express
 
 This backend is used to verify captchas and make a request to the Avalanche Network to issue tokens. The backend files are stored 
-in the ``src/server`` directory.
-The node is automatically started with the ``yarn serve`` command but can be individually started with ``node src/server/index.js``
+in the ``server`` directory.
+The node is automatically started with the ``yarn serve`` command but can be individually started with ``node server/index.js``
 
 ## Deployment
  1) Setup environment variables for production
  2) Compile and minify to have a production ready application with ``yarn build``. 
- 3) Run the node backend by running ``node src/server/index.js``.
+ 3) Run the node backend by running ``node server/index.js``.
 
 
 

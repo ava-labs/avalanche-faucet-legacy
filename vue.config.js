@@ -1,4 +1,4 @@
-const {beforeMiddleware, onListening} = require('./src/server/configure');
+const {beforeMiddleware, onListening} = require('./server/configure');
 
 
 module.exports = {
