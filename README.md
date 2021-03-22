@@ -20,8 +20,8 @@ Variables beginning with ``VUE_APP_`` will get injected into the vue application
  
 Refer to ``.env.example``
 
-- ``AVA_IP`` The ip address of the Gecko jrpc node.
-- ``AVA_PORT`` The port of the Gecko jrpc node.
+- ``AVA_IP`` The ip address of the AvalancheGo jrpc node.
+- ``AVA_PORT`` The port of the AvalancheGo jrpc node.
 - ``AVA_PROTOCOL`` Either ``http`` or ``https``
 - ``AVA_NETWORK_ID`` What is the network id of the Avalanche network you are connecting to.
 - ``AVA_CHAIN_ID`` The blockchain id of the Avalanche  Network you are connecting to.
@@ -36,7 +36,7 @@ Refer to ``.env.example``
 ### Running The Project
 
 In order for the faucet to work, it needs the Avalanche network to operate on. 
-1) Make sure you have installed and able to run a Gecko node properly.
+1) Make sure you have installed and able to run an Avalanche node properly.
 2) All environment variables are correct and your private key has funds in it.
 2) Run the project with hot reloading ``yarn serve``
 
