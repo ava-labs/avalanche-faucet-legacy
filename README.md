@@ -66,7 +66,7 @@ You can generate API Keys to request tokens programmatically.
 Run `yarn generate_api_key -- "<LABEL>" <AMOUNT>`
 
 #### Request Custom Faucet Drops
-You can send a `POST` request to `/api/token_custom` in the following format:
+You can send a `POST` request to `/api/token_custom` in the following JSON body:
 ```json
 {
     "key": "7EKM11P-ATZ4VVN-KZ3JE2R-ZW78STC",
@@ -74,9 +74,9 @@ You can send a `POST` request to `/api/token_custom` in the following format:
     "to": "0x5f658a6d1928c39b286b48192fea8d46d87ad077"
 }
 ```
-- `key` API KEY to make the request with.
-- `amount` How much nAVAX is requested
-- `to` Receiving address
+- `key` API Key to make the request with.
+- `amount` How much nAVAX is requested.
+- `to` Receiving address.
 
 
 # Browser Support
