@@ -54,7 +54,29 @@ The node is automatically started with the ``yarn serve`` command but can be ind
  2) Compile and minify to have a production ready application with ``yarn build``. 
  3) Run the node backend by running ``node server/index.js``.
 
+## API Keys
+Requests can use API Keys to request AVAX programmatically. This feature requires a MYSQL database connection. 
+Connection parameters must be set using `.env`. Refer to `.env.example` for an example.
 
+#### Generate API Key
+You can generate API Keys to request tokens programmatically.
+- `LABEL` is any string to label the key. 
+- `AMOUNT` is the daily nAVAX request limit. 
+
+Run `yarn generate_api_key -- "<LABEL>" <AMOUNT>`
+
+#### Request Custom Faucet Drops
+You can send a `POST` request to `/api/token_custom` in the following format:
+```json
+{
+    "key": "7EKM11P-ATZ4VVN-KZ3JE2R-ZW78STC",
+    "amount": 1000000000,
+    "to": "0x5f658a6d1928c39b286b48192fea8d46d87ad077"
+}
+```
+- `key` API KEY to make the request with.
+- `amount` How much nAVAX is requested
+- `to` Receiving address
 
 
 # Browser Support

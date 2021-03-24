@@ -1,1 +1,1 @@
-web: node server/index.js
+web: ts-node --project server/tsconfig.json server/index.ts

@@ -1,13 +1,16 @@
+
 require('dotenv').config();
 
-const express = require('express');
-// const cors = require('cors');
-// const bodyParser = require('body-parser');
+import express from 'express'
+import {createApiKey, connectDB} from "./db";
+import {CONFIG, avm} from "./ava";
+
 const { resolve } = require('path');
-const {CONFIG, avm} = require('./ava');
+
 const history = require('connect-history-api-fallback');
 const {beforeMiddleware} = require('./configure');
 const helmet = require("helmet");
+
 
 
 
@@ -47,6 +50,10 @@ const staticConf = { maxAge: '1y', etag: false };
 app.use(express.static(publicPath, staticConf));
 app.use(history());
 
+// Connect database
+connectDB().catch(e => {
+    console.log("Database connection failed.")
+})
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
@@ -56,9 +63,5 @@ app.listen(port, () => {
 
     if(CONFIG.ASSET_ID){
         console.log("Asset Id: \t",CONFIG.ASSET_ID);
-        avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then(res => {
-            console.log(res);
-            // console.log(`(X) Available Balance: ${res.toString()}`);
-        });
     }
 });
