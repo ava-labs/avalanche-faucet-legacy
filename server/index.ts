@@ -51,7 +51,9 @@ app.use(express.static(publicPath, staticConf));
 app.use(history());
 
 // Connect database
-connectDB().catch(e => {
+connectDB().then(conn => {
+    console.log("Database connected.")
+}).catch(e => {
     console.log("Database connection failed.")
 })
 
