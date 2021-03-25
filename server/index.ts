@@ -44,7 +44,8 @@ app.use(helmet.xssFilter());
 app.use(helmet.frameguard());
 
 // Serve static files
-const publicPath = resolve(__dirname, '../dist');
+// Two directories up because compiled code is in build directory
+const publicPath = resolve(__dirname, '../../dist');
 const staticConf = { maxAge: '1y', etag: false };
 
 app.use(express.static(publicPath, staticConf));
