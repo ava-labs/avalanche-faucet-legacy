@@ -1,1 +1,1 @@
-web: ts-node --project server/tsconfig.json server/index.ts
+web: yarn start
