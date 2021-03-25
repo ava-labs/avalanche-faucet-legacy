@@ -4,7 +4,7 @@ const USERNAME = process.env.MYSQL_USERNAME || 'root'
 const PASSWORD = process.env.MYSQL_PASSWORD || 'root'
 const DB = process.env.MYSQL_DB || 'avalanche_faucet'
 
-export default {
+module.exports = {
   "type": "mysql",
   "host": HOST,
   "port": parseInt(PORT),
@@ -14,13 +14,13 @@ export default {
   "synchronize": true,
   "logging": false,
   "entities": [
-    __dirname+"/server/entity/**/*.ts"
+    __dirname+"/server/build/entity/**/*.js"
   ],
   "migrations": [
-    "server/migration/**/*.ts"
+    __dirname+"server/build/migration/**/*.js"
   ],
   "subscribers": [
-    "server/subscriber/**/*.ts"
+    __dirname+"server/build/subscriber/**/*.js"
   ],
   "options": {
     "useUTC": true
