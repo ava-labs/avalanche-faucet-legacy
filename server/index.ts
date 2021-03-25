@@ -54,8 +54,9 @@ app.use(history());
 // Connect database
 connectDB().then(conn => {
     console.log("Database connected.")
-}).catch(e => {
+}).catch((e: Error) => {
     console.log("Database connection failed.")
+    console.log(e.message)
 })
 
 const port = process.env.PORT || 4000;

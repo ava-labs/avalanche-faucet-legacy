@@ -13,7 +13,6 @@ let dbConnection: null|Connection;
 
 async function connectDB(){
     let connection = await createConnection().catch((e:any)=>{
-        console.log(e)
         throw e
     })
     dbConnection = connection
