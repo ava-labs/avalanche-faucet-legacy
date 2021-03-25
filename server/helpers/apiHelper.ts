@@ -70,38 +70,6 @@ class ApiHelper{
 
             let txID = await sendDrop(address, amtBN)
             return txID
-            //
-            // let addressChain = getAddressChain(address)
-            //
-            // if(addressChain === 'X'){
-            //     let amount =
-            //     sendDropX(address, amount).then(txid => {
-            //         if(txid.status){
-            //             res.json(txid);
-            //         }else{
-            //             res.json({
-            //                 status: 'success',
-            //                 message: txid
-            //             });
-            //         }
-            //     }).catch(err => {
-            //         console.error(err);
-            //         res.json({
-            //             status: 'error',
-            //             message: 'Error issuing the transaction.'
-            //         });
-            //     });
-            // }else if(addressChain === 'C'){
-            //     let amount = new BN(CONFIG_C.DROP_SIZE)
-            //     let receipt = await sendAvaC(address, amount);
-            //     onsuccess(res, receipt.transactionHash);
-            // }else{
-            //     res.json({
-            //         status: 'error',
-            //         message: 'Invalid Address'
-            //     });
-            // }
-
         }else{
             throw new Error('Invalid Captcha')
         }
