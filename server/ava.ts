@@ -3,8 +3,8 @@ const BN = require('bn.js');
 
 
 const AVA_IP = process.env.AVA_IP || "localhost";
-const AVA_PORT = process.env.AVA_PORT || 9650;
-const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "https";
+const AVA_PORT = process.env.AVA_PORT || "9650";
+const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 const AVA_NETWORK_ID = process.env.AVA_NETWORK_ID || "12345";
 
 let AVA_CHAIN_ID = process.env.AVA_CHAIN_ID || 'X';
@@ -18,20 +18,18 @@ const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
 
 let bintools = avalanche.BinTools.getInstance();
 
-let ava = new avalanche.Avalanche(AVA_IP, AVA_PORT, AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
+let ava = new avalanche.Avalanche(AVA_IP, parseInt(AVA_PORT), AVA_PROTOCOL, parseInt(AVA_NETWORK_ID), AVA_CHAIN_ID);
 let avm = ava.XChain();
     avm.setTxFee(new BN(AVAX_FEE));
 
 let info = ava.Info();
 
-
-info.getBlockchainID('X').then((res) => {
+info.getBlockchainID('X').then((res:string) => {
     avm.refreshBlockchainID(res);
     avm.setBlockchainAlias('X');
+}).catch((err: any) => {
+    console.error(err)
 })
-
-// avm.setB
-
 
 let myKeychain = avm.keyChain();
 let keypair = myKeychain.importKey(PK_X);
@@ -53,23 +51,23 @@ const CONFIG = {
     CAPTCHA_SECRET: CAPTCHA_SECRET
 };
 
-console.log(CONFIG);
-
 function printXInfo(){
-    avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then(res => {
+    avm.getBalance(CONFIG.FAUCET_ADDRESS, CONFIG.ASSET_ID).then((res:any) => {
         let balance =  res.balance;
         let fee = avm.getTxFee();
 
         console.log("(X) Available Balance: ",balance);
         console.log("(X) Droplet size: \t",CONFIG.DROP_SIZE);
         console.log(`(X) Tx Fee: ${fee.toString()}`)
+    }).catch((err: any)=>{
+        console.error(err);
     });
 }
 printXInfo();
 
 async function checkAssetId(){
     if(!CONFIG.ASSET_ID){
-        let res = await avm.getAssetDescription('AVA');
+        let res = await avm.getAssetDescription('AVAX');
         CONFIG.ASSET_ID = bintools.cb58Encode(res.assetID);
         console.log("Updated Asset Id: ",CONFIG.ASSET_ID);
     }else{
@@ -80,11 +78,10 @@ async function checkAssetId(){
 }
 checkAssetId();
 
-
-module.exports = {
+export {
     ava,
     avm,
     bintools,
     CONFIG
-};
+}
 

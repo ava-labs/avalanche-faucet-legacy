@@ -1,3 +1,6 @@
+import {parseEvmBechAddress} from "./helpers/helper";
+import {BN} from "avalanche";
+
 const Web3 = require('web3');
 
 // Get constants
@@ -25,7 +28,7 @@ let web3 = new Web3(rpcUrl);
 let account = web3.eth.accounts.privateKeyToAccount(PK);
 
 // Get available C-AVA balance
-web3.eth.getBalance(account.address).then(res => {
+web3.eth.getBalance(account.address).then((res:any) => {
     console.log("(C) Available Balance: ", res);
     console.log("(C) Droplet size: \t",txAmount);
     console.log(`(C) Address: `,account.address)
@@ -45,8 +48,15 @@ async function getAcceptedTxCount(){
     return num
 }
 
-// !!! Receiver is given in 0x format
-async function sendAvaC(receiver){
+// !!! Receiver is given is either 0x or C-0x
+// Amount is given in gWEI
+async function sendAvaC(receiver: string, amount: BN){
+    if(receiver[0]==='C'){
+        receiver = parseEvmBechAddress(receiver)
+    }
+
+    // convert nAvax to wei
+    let amountWei = amount.mul(new BN(1000000000))
     let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
 
     const txConfig = {
@@ -54,7 +64,7 @@ async function sendAvaC(receiver){
         gasPrice: GAS_PRICE,
         gas: "21000",
         to: receiver,
-        value: txAmount,
+        value: amountWei.toString(),
         data: "",
         nonce: latestTx,
     };
@@ -66,6 +76,12 @@ async function sendAvaC(receiver){
     if(!err) return receipt;
     console.log(err);
     throw err;
+}
+
+export {
+    sendAvaC,
+    web3,
+    CONFIG_C
 }
 
 module.exports = {

@@ -1,5 +1,4 @@
-const {beforeMiddleware, onListening} = require('./src/server/configure');
-
+const {beforeMiddleware, onListening} = require('./server/build/configure');
 
 module.exports = {
   "transpileDependencies": [
