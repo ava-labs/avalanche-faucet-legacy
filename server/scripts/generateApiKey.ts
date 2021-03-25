@@ -17,6 +17,7 @@ async function main(){
         connection.close()
         return key
     }catch (e){
+        throw e
     }
 
 }

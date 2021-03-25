@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "ts-node --project server/tsconfig.json server/index.ts",
+    "start": "tsc --p server && node server/build/index.js",
     "serve": "tsc --p server && vue-cli-service serve",
     "build": "tsc --p server && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "generate_api_key": "ts-node --project server/tsconfig.json server/scripts/generateApiKey.ts",
+    "generate_api_key": "tsc --p server && node server/build/scripts/generateApiKey.js",
     "test": "jest"
   },
   "dependencies": {

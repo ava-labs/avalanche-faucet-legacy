@@ -9,7 +9,7 @@ export class ApiKey {
     name!: string;
     @Column()
     hash!: string;
-    @Column()
+    @Column({type: 'bigint'})
     daily_limit!: number;
     @OneToMany(() => Transaction, transaction => transaction.api_key)
     transactions!: Transaction

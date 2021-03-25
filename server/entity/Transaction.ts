@@ -7,7 +7,7 @@ export class Transaction {
     id!: number;
     @Column()
     to!: string;
-    @Column()
+    @Column({type: 'bigint'})
     amount!: number;
     @ManyToOne(() => ApiKey, api_key => api_key.transactions)
     api_key!: ApiKey;
