@@ -4,7 +4,7 @@ There are two different layers in this project. The Node Express backend and the
 
 ## Requirements
 - Yarn (https://classic.yarnpkg.com/en/docs/install/#mac-stable)
-- Node `v15.6.0` or greater
+- Node `v15.x` 
 - Google reCaptcha keys for **reCaptcha v2** with **"I'm not a robot" Checkbox**. Make sure to have 'localhost' listed in the domains. (https://www.google.com/recaptcha/intro/v3.html)
 
 ## Vue Application

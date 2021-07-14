@@ -35,8 +35,6 @@
                 <v-card-text v-show="state==='error'">
                     <v-alert type="error" text>
                         {{responseError}}
-                        <br><br>
-                        <p>Oooops! Looks like something went wrong. Please try again later.</p>
                     </v-alert>
                     <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
@@ -166,11 +164,23 @@
                 axios.post('/api/token',{
                     "g-recaptcha-response": this.captchaResponse,
                     "address": this.address
-                }).then(this.onresponse).catch(() => {
+                }).then(this.onresponse).catch((err) => {
+                    // Rate limit response
+                    if(err.response) {
+                        if (err.response.status === 429){
+                            parent.onresponse({
+                                data: {
+                                    status: 'error',
+                                    message: "Rate limited. You made too many requests, please try again in 1 minute."
+                                }
+                            });
+                            return
+                        }
+                    }
                     parent.onresponse({
                         data:{
                             status: 'error',
-                            message: "Request timeout."
+                            message: "Request timeout. Please try again later."
                         }
                     });
                 });
