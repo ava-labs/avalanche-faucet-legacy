@@ -35,8 +35,6 @@
                 <v-card-text v-show="state==='error'">
                     <v-alert type="error" text>
                         {{responseError}}
-                        <br><br>
-                        <p>Oooops! Looks like something went wrong. Please try again later.</p>
                     </v-alert>
                     <v-btn @click="clear" depressed block>Try Again</v-btn>
                 </v-card-text>
@@ -173,7 +171,7 @@
                             parent.onresponse({
                                 data: {
                                     status: 'error',
-                                    message: "Rate limited. You've made too many requests."
+                                    message: "Rate limited. You made too many requests, please try again in 1 minute."
                                 }
                             });
                             return
@@ -182,7 +180,7 @@
                     parent.onresponse({
                         data:{
                             status: 'error',
-                            message: "Request timeout."
+                            message: "Request timeout. Please try again later."
                         }
                     });
                 });
