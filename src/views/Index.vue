@@ -166,7 +166,19 @@
                 axios.post('/api/token',{
                     "g-recaptcha-response": this.captchaResponse,
                     "address": this.address
-                }).then(this.onresponse).catch(() => {
+                }).then(this.onresponse).catch((err) => {
+                    // Rate limit response
+                    if(err.response) {
+                        if (err.response.status === 429){
+                            parent.onresponse({
+                                data: {
+                                    status: 'error',
+                                    message: "Rate limited. You've made too many requests."
+                                }
+                            });
+                            return
+                        }
+                    }
                     parent.onresponse({
                         data:{
                             status: 'error',
