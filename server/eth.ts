@@ -12,7 +12,6 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
-const GAS_PRICE = "500000000000";
 
 const CONFIG_C = {
   PK: PK,
@@ -35,6 +34,10 @@ web3.eth.getBalance(account.address).then((res:any) => {
 });
 
 
+async function getGasPrice(){
+    return await web3.eth.getGasPrice()
+}
+
 async function getAcceptedTxCount(){
     let json = {
         jsonrpc: "2.0",
@@ -55,13 +58,15 @@ async function sendAvaC(receiver: string, amount: BN){
         receiver = parseEvmBechAddress(receiver)
     }
 
+    let gasPrice = await getGasPrice()
+
     // convert nAvax to wei
     let amountWei = amount.mul(new BN(1000000000))
     let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
 
     const txConfig = {
         from: account.address,
-        gasPrice: GAS_PRICE,
+        gasPrice: gasPrice,
         gas: "21000",
         to: receiver,
         value: amountWei.toString(),
