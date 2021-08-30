@@ -12,6 +12,7 @@ const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
 
+const MAX_GAS = 235000000000;
 
 const CONFIG_C = {
   PK: PK,
@@ -34,8 +35,17 @@ web3.eth.getBalance(account.address).then((res:any) => {
 });
 
 
-async function getGasPrice(){
+async function getGasPrice(): Promise<number>{
     return await web3.eth.getGasPrice()
+}
+
+/**
+ * Returns the gas price + 25%, or max gas
+ */
+async function getAdjustedGasPrice(): Promise<number>{
+    let gasPrice = await getGasPrice()
+    let adjustedGas = Math.floor(gasPrice * 1.25)
+    return Math.min(adjustedGas, MAX_GAS)
 }
 
 async function getAcceptedTxCount(){
@@ -58,7 +68,7 @@ async function sendAvaC(receiver: string, amount: BN){
         receiver = parseEvmBechAddress(receiver)
     }
 
-    let gasPrice = await getGasPrice()
+    let gasPrice = await getAdjustedGasPrice()
 
     // convert nAvax to wei
     let amountWei = amount.mul(new BN(1000000000))
