@@ -3,12 +3,9 @@ import {AxiosResponse} from "axios";
 import {CONFIG, avm, bintools} from './ava'
 // const {CONFIG, avm, bintools} = require('./ava');
 const axios = require('axios').default;
-const {sendAvaC, CONFIG_C} = require("./eth");
+const { CONFIG_C} = require("./eth");
 const Web3 = require("web3");
-import {BN} from 'avalanche'
-import {getAddressChain, sendDrop, sendDropX} from "./helpers/helper";
 import ApiHelper from "./helpers/apiHelper";
-// const AVA = require('./ava');
 var router = require('express').Router();
 
 router.get('/howmuch', (req: any, res: any) => {

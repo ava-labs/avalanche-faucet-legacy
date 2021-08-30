@@ -1,5 +1,7 @@
 import {parseEvmBechAddress} from "./helpers/helper";
 import {BN} from "avalanche";
+import PQueue from 'p-queue';
+import {TransactionReceipt} from 'web3-core'
 
 const Web3 = require('web3');
 
@@ -26,6 +28,8 @@ let web3 = new Web3(rpcUrl);
 
 // Create the web3 account from the faucet private key
 let account = web3.eth.accounts.privateKeyToAccount(PK);
+
+const cQueue = new PQueue({concurrency: 1, timeout: 5000, throwOnTimeout: true});
 
 // Get available C-AVA balance
 web3.eth.getBalance(account.address).then((res:any) => {
@@ -63,7 +67,7 @@ async function getAcceptedTxCount(){
 
 // !!! Receiver is given is either 0x or C-0x
 // Amount is given in gWEI
-async function sendAvaC(receiver: string, amount: BN){
+async function sendAvaC(receiver: string, amount: BN): Promise<TransactionReceipt>{
     if(receiver[0]==='C'){
         receiver = parseEvmBechAddress(receiver)
     }
@@ -91,6 +95,17 @@ async function sendAvaC(receiver: string, amount: BN){
     if(!err) return receipt;
     console.log(err);
     throw err;
+}
+
+/**
+ * Adds the requested drop to the queue
+ * @param receiver
+ * @param amount
+ */
+export async function sendAvaxCOnQueue(receiver: string, amount: BN):Promise<TransactionReceipt>{
+    return await cQueue.add(async ()=>{
+        return await sendAvaC(receiver,amount)
+    })
 }
 
 export {

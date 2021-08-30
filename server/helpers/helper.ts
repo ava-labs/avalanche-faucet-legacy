@@ -1,6 +1,6 @@
 // Sends a drop from the faucet to the given address
 import {BN} from "avalanche";
-import {CONFIG_C, sendAvaC} from "../eth";
+import {CONFIG_C, sendAvaC, sendAvaxCOnQueue} from "../eth";
 const {CONFIG, avm, bintools} = require('../ava');
 const Web3 = require("web3");
 
@@ -11,7 +11,7 @@ export async function sendDrop(address: string, sendAmount: BN){
         let txId = await sendDropX(address, sendAmount)
         return txId
     }else if(addressChain === 'C'){
-        let receipt = await sendAvaC(address, sendAmount);
+        let receipt = await sendAvaxCOnQueue(address, sendAmount);
         return receipt.transactionHash
     }else{
         throw new Error("Invalid Address")
