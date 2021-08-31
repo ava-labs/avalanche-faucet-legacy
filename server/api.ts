@@ -11,6 +11,18 @@ import ApiHelper from "./helpers/apiHelper";
 // const AVA = require('./ava');
 var router = require('express').Router();
 
+const Queue = require('better-queue')
+
+const q = new Queue(({address,captchaResponse, res}: any, callback: (arg0: null, arg1: string | Error) => void) => {
+    ApiHelper.token(address, captchaResponse).then(txID => {
+        onsuccess(res, txID)
+        callback(null, txID)
+    }).catch((e: Error) => {
+        onError(res, e)
+        callback(null, e)
+    })
+})
+
 router.get('/howmuch', (req: any, res: any) => {
     res.json({
         dropSizeX: CONFIG.DROP_SIZE,
@@ -34,11 +46,8 @@ router.post('/token', (req: any, res: any) => {
     let address = req.body.address;
     let captchaResponse = req.body["g-recaptcha-response"];
 
-    ApiHelper.token(address, captchaResponse).then(txID => {
-        onsuccess(res, txID)
-    }).catch((e: Error) => {
-        onError(res, e)
-    })
+    q.push({address, captchaResponse})
+
 });
 
 function onError(res: any, err: Error){
