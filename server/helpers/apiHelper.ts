@@ -40,7 +40,7 @@ class ApiHelper{
     }
 
 
-    static async token(address: string, captchaResponse: string, index: number): Promise<string>{
+    static async token(address: string, captchaResponse: string, index = 0): Promise<string>{
         // Return error if captcha doesnt exist
         if(!captchaResponse){
             throw new Error('Invalid Captcha')

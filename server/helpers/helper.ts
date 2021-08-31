@@ -6,7 +6,7 @@ const Web3 = require("web3");
 
 
 // sendAmount is nAVAX
-export async function sendDrop(address: string, sendAmount: BN, index: number){
+export async function sendDrop(address: string, sendAmount: BN, index = 0){
     let addressChain = getAddressChain(address)
     if(addressChain === 'X'){
         let txId = await sendDropX(address, sendAmount)

@@ -73,16 +73,30 @@ router.post('/token', (req: any, res: any) => {
     let address = req.body.address;
     let captchaResponse = req.body["g-recaptcha-response"];
 
-    const queueToUse = queuesMap[currentIndex]
+    const addressChain = getAddressChain(address)
 
-    queueToUse.push({address, captchaResponse, res, index: currentIndex})
+    if(addressChain === 'X') {
+        
+        ApiHelper.token(address, captchaResponse).then(txID => {
+            onsuccess(res, txID)
+        }).catch((e: Error) => {
+            onError(res, e)
+        })
 
-    // round-robin
-    if(currentIndex >= queuesMap.length) {
-        currentIndex = 0
     }else{
-        currentIndex++
+        const queueToUse = queuesMap[currentIndex]
+
+        queueToUse.push({address, captchaResponse, res, index: currentIndex})
+
+        // round-robin
+        if(currentIndex >= queuesMap.length) {
+            currentIndex = 0
+        }else{
+            currentIndex++
+        }
     }
+
+    
 
 });
 
