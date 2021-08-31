@@ -4,14 +4,15 @@ import {CONFIG_C, sendAvaC} from "../eth";
 const {CONFIG, avm, bintools} = require('../ava');
 const Web3 = require("web3");
 
+
 // sendAmount is nAVAX
-export async function sendDrop(address: string, sendAmount: BN){
+export async function sendDrop(address: string, sendAmount: BN, index: number){
     let addressChain = getAddressChain(address)
     if(addressChain === 'X'){
         let txId = await sendDropX(address, sendAmount)
         return txId
     }else if(addressChain === 'C'){
-        let receipt = await sendAvaC(address, sendAmount);
+        let receipt = await sendAvaC(address, sendAmount, index);
         return receipt.transactionHash
     }else{
         throw new Error("Invalid Address")
