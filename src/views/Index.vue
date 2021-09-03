@@ -9,6 +9,9 @@
 
 
                 <v-card-text v-show="state==='form'">
+                  <p>Drops are limited to <b>1 request per hour</b>.
+<!--                    <br>If larger allocation is needed please contact us on <a href="https://discord.com/invite/RwXY7P6" target="_blank">Discord</a>-->
+                  </p>
                     <div>
                         <label>Address (Where to send the tokens.)</label>
                         <qr-input v-model="address" placeholder="Address"></qr-input>
