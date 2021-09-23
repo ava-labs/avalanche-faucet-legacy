@@ -17,31 +17,47 @@ const MAX_GAS = 235000000000;
 
 const PKEYS = PK?.split(",").map(item => item.trim())
 
+console.log({PKEYS})
+
 const keysMap : {[index:number]: any} = {}
+
+let rpcUrl = `${AVA_PROTOCOL}://${AVA_IP}:${AVA_PORT}/ext/bc/C/rpc`;
+let web3 = new Web3(rpcUrl);
 
 // Create the web3 account from the faucet private keys
 PKEYS?.forEach((key, index) => {
     let account = web3.eth.accounts.privateKeyToAccount(key);
-    keysMap[index] = account
-
+    
+    let ttl = 0
     // Get available C-AVA balance
     web3.eth.getBalance(account.address).then((res:any) => {
         console.log("(C) Available Balance: ", res);
         console.log("(C) Droplet size: \t",txAmount);
-        console.log(`(C) Address: `,account.address)
-    });
+        console.log(`(C) Address: `,account.address);
+        // instead of making a network request to check the balance
+        // we can count how many transactions it will take the current balance 
+        // to run out 
+        ttl = Math.floor(Number(res) / Number(txAmount))
+        console.log(`(C) TTL: `, ttl)
+    }).catch((e: any) => {
+        console.log(`An error occured fetching the balance for ${account.address}: ${e.message}`) 
+    }).finally(() => {
+        keysMap[index] = {account, ttl}
+    })
+
+    
 })
 
 const CONFIG_C = {
   PK: PK,
   DROP_SIZE: txAmount,
-  PKEYS_LENGTH: PKEYS?.length || 0
+  PKEYS_LENGTH: PKEYS?.length || 0,
+  KEYS_MAP: keysMap
 };
 
 // Init web 3 with target AVA Node
 
-let rpcUrl = `${AVA_PROTOCOL}://${AVA_IP}:${AVA_PORT}/ext/bc/C/rpc`;
-let web3 = new Web3(rpcUrl);
+
 
 
 // let account = web3.eth.accounts.privateKeyToAccount(PK);
@@ -64,7 +80,7 @@ async function getAcceptedTxCount(){
     let json = {
         jsonrpc: "2.0",
         method: "eth_getTransactionCount",
-        params: [keysMap[0].address, "accepted"],
+        params: [keysMap[0].account.address, "accepted"],
         id: 1
     }
     let res = await axios.post(rpcUrl, json);
@@ -82,7 +98,7 @@ async function sendAvaC(receiver: string, amount: BN, index: number){
 
     let gasPrice = await getAdjustedGasPrice()
 
-    let account = keysMap[index]
+    let {account} = keysMap[index]
 
     // convert nAvax to wei
     let amountWei = amount.mul(new BN(1000000000))
