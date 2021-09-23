@@ -21,8 +21,10 @@ function findNewQueue(currentIndex: number) {
         index = getValidIndex(index, queuesMap.length)
         if(CONFIG_C.KEYS_MAP[index].ttl > 1) {
             found = true
+        }else{
+            index++
         }
-        index++
+        
     }
     return index
 }
@@ -96,7 +98,7 @@ router.post('/token_custom', async (req: any, res: any) =>{
 router.post('/token', async (req: any, res: any) => {
     let address = req.body.address;
     let captchaResponse = req.body["g-recaptcha-response"];
-    
+
     const addressChain = getAddressChain(address)
 
     if(addressChain === 'X') {
