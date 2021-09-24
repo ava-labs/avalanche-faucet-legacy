@@ -1,16 +1,56 @@
-import {getApiKey, validateKey} from "./db";
-import {AxiosResponse} from "axios";
-import {CONFIG, avm, bintools} from './ava'
-// const {CONFIG, avm, bintools} = require('./ava');
-const axios = require('axios').default;
-const {sendAvaC, CONFIG_C} = require("./eth");
-const Web3 = require("web3");
-import {BN} from 'avalanche'
-import {getAddressChain, sendDrop, sendDropX} from "./helpers/helper";
+import {CONFIG} from './ava'
+const {CONFIG_C} = require("./eth");
+import {getAddressChain} from "./helpers/helper";
 import ApiHelper from "./helpers/apiHelper";
 import { web3 } from "./eth";
-// const AVA = require('./ava');
 var router = require('express').Router();
+
+import {io} from './index'
+import { Socket } from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+
+let gSocket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
+
+io.on("connection", (socket) => {
+  // ...
+  console.log(`Socket ${socket.id} has connected!`)
+  gSocket = socket
+  socket.on('disconnect', () => {
+      console.log(`${socket.id} has disconnected`)
+  })
+
+  socket.on('apiToken', async (req) => {
+    let address = req.address;
+    let captchaResponse = req["g-recaptcha-response"];
+    // round-robin
+    currentIndex = getValidIndex(currentIndex, queuesMap.length)
+    let queueToUse = queuesMap[currentIndex]
+    // if TTL is low, check balance
+    // if balance is low, transfer to another address
+    const keyToUse = CONFIG_C.KEYS_MAP[currentIndex]
+    if (keyToUse.ttl <= 1) {
+        await web3.eth.getBalance(keyToUse.account.address).then((res:any) => {
+            if(Number(res) > Number(CONFIG_C.DROP_SIZE)) {
+                console.log(`There is sufficient balance for address ${keyToUse.account.address}. Resetting ttl...`)
+                keyToUse.ttl = Math.floor(Number(res) / Number(CONFIG_C.DROP_SIZE))
+            }else{
+                console.log(`Insufficient balance for address ${keyToUse.account.address}. changing the address...`)
+                currentIndex = findNewQueue(currentIndex)
+                queueToUse = queuesMap[currentIndex]
+            }
+        }).catch((e: any) => {
+            console.log(`An error occured fetching the balance for ${keyToUse.account.address}: ${e.message}`) 
+            currentIndex = findNewQueue(currentIndex)
+            queueToUse = queuesMap[currentIndex]
+        })
+    }
+    queueToUse.push({address, captchaResponse, index: currentIndex})
+    // reduce ttl 
+    CONFIG_C.KEYS_MAP[currentIndex].ttl -= 1   
+})
+});
+
+
 
 const Queue = require('better-queue')
 
@@ -47,12 +87,22 @@ const queuesMap: any[] = []
 console.log(`Setting up ${CONFIG_C.PKEYS_LENGTH} queues...`)
 for(let i = 0; i < CONFIG_C.PKEYS_LENGTH; i++) {
     console.log(`Setting up queue ${i} out of ${CONFIG_C.PKEYS_LENGTH}...`)
-    const q = new Queue(async ({address,captchaResponse, res, index}: any, callback: (arg0: null, arg1: string | Error) => void) => {
+    const q = new Queue(async ({address,captchaResponse, index}: any, callback: (arg0: null, arg1: string | Error) => void) => {
         ApiHelper.token(address, captchaResponse, index).then(txID => {
-            onsuccess(res, txID)
+            gSocket.emit('responseToken', {
+                data: {
+                    status: 'success',
+                    message: txID
+                }
+            })
             callback(null, txID)
         }).catch((e: Error) => {
-            onError(res, e)
+            gSocket.emit('responseToken', {
+                data: {
+                    status: 'error',
+                    message: e
+                }
+            })
             callback(null, e)
         })
     })
@@ -107,35 +157,9 @@ router.post('/token', async (req: any, res: any) => {
         }).catch((e: Error) => {
             onError(res, e)
         })
-
     }else{
-        // round-robin
-        currentIndex = getValidIndex(currentIndex, queuesMap.length)
-        let queueToUse = queuesMap[currentIndex]
-        // if TTL is low, check balance
-        // if balance is low, transfer to another address
-        const keyToUse = CONFIG_C.KEYS_MAP[currentIndex]
-        if (keyToUse.ttl <= 1) {
-            await web3.eth.getBalance(keyToUse.account.address).then((res:any) => {
-                if(Number(res) > Number(CONFIG_C.DROP_SIZE)) {
-                    console.log(`There is sufficient balance for address ${keyToUse.account.address}. Resetting ttl...`)
-                    keyToUse.ttl = Math.floor(Number(res) / Number(CONFIG_C.DROP_SIZE))
-                }else{
-                    console.log(`Insufficient balance for address ${keyToUse.account.address}. changing the address...`)
-                    currentIndex = findNewQueue(currentIndex)
-                    queueToUse = queuesMap[currentIndex]
-                }
-            }).catch((e: any) => {
-                console.log(`An error occured fetching the balance for ${keyToUse.account.address}: ${e.message}`) 
-                currentIndex = findNewQueue(currentIndex)
-                queueToUse = queuesMap[currentIndex]
-            })
-        }
-        queueToUse.push({address, captchaResponse, res, index: currentIndex})
-        // reduce ttl 
-        CONFIG_C.KEYS_MAP[currentIndex].ttl -= 1   
+       console.log(`Invalid request. C chain requests use the websockets`) 
     }
-
 });
 
 function onError(res: any, err: Error){

@@ -17,8 +17,6 @@ const MAX_GAS = 235000000000;
 
 const PKEYS = PK?.split(",").map(item => item.trim())
 
-console.log({PKEYS})
-
 const keysMap : {[index:number]: any} = {}
 
 let rpcUrl = `${AVA_PROTOCOL}://${AVA_IP}:${AVA_PORT}/ext/bc/C/rpc`;

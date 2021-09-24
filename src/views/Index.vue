@@ -49,8 +49,11 @@
     import Big from 'big.js';
     const avalanche = require("avalanche");
     let bintools = avalanche.BinTools.getInstance();
+    import { io } from "socket.io-client";
 
+    const socket = io('http://localhost:4000', {secure: true});
 
+    console.log({socket})
 
     export default {
         components: {
@@ -67,7 +70,7 @@
                 state: 'form', // form || success
                 dropSizeX: Big(0),
                 dropSizeC: Big(0),
-                txId: "",
+                txId: ""
             }
         },
         methods:{
@@ -139,8 +142,6 @@
                     this.errors.push("You must fill the captcha.");
                 }
 
-
-
                 if(this.errors.length===0){
                     this.requestToken();
                 }
@@ -161,29 +162,46 @@
             requestToken(){
                 let parent = this;
                 this.isAjax = true;
-                axios.post('/api/token',{
+                
+                let chainAlias = this.assetType;
+                console.log({chainAlias})
+                if(chainAlias == 'X') {
+                     axios.post('/api/token',{
                     "g-recaptcha-response": this.captchaResponse,
                     "address": this.address
-                }).then(this.onresponse).catch((err) => {
-                    // Rate limit response
-                    if(err.response) {
-                        if (err.response.status === 429){
-                            parent.onresponse({
-                                data: {
-                                    status: 'error',
-                                    message: "Rate limited. You made too many requests, please try again in 1 minute."
-                                }
-                            });
-                            return
+                    }).then(this.onresponse).catch((err) => {
+                        // Rate limit response
+                        if(err.response) {
+                            if (err.response.status === 429){
+                                parent.onresponse({
+                                    data: {
+                                        status: 'error',
+                                        message: "Rate limited. You made too many requests, please try again in 1 minute."
+                                    }
+                                });
+                                return
+                            }
                         }
-                    }
-                    parent.onresponse({
-                        data:{
-                            status: 'error',
-                            message: "Request timeout. Please try again later."
-                        }
+                        parent.onresponse({
+                            data:{
+                                status: 'error',
+                                message: "Request timeout. Please try again later."
+                            }
+                        });
                     });
-                });
+                }else if(chainAlias == 'C') {
+                    console.log({socket})
+                    socket.emit('apiToken', {
+                        "g-recaptcha-response": this.captchaResponse,
+                        "address": this.address
+                    })
+
+                    socket.on('responseToken', (response) => {
+                        console.log({response})
+                        this.onresponse(response)
+                    })
+                }
+               
             }
         },
         created() {

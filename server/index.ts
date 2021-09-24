@@ -5,11 +5,15 @@ import express from 'express'
 import {createApiKey, connectDB} from "./db";
 import {CONFIG, avm} from "./ava";
 
+
 const { resolve } = require('path');
 
 const history = require('connect-history-api-fallback');
 const {beforeMiddleware} = require('./configure');
 const helmet = require("helmet");
+
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 
 
@@ -24,11 +28,23 @@ if(!CONFIG.CAPTCHA_SECRET){
 }
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {  cors: {
+    origin: '*',
+  } });
+
+io.on("connection", (socket) => {
+    // ...
+    console.log(`Socket ${socket.id} has connected!`)
+    socket.on('disconnect', () => {
+        console.log(`${socket.id} has disconnected`)
+    })
+});
+
 app.use(helmet());
 
-
 // API
-beforeMiddleware(app);
+// beforeMiddleware(app);
 
 // Https rerouting
 app.use((req, res, next) => {
@@ -60,7 +76,7 @@ connectDB().then(conn => {
 })
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`listening on port: \t${port}`);
     console.log("(X) Droplet size: \t",CONFIG.DROP_SIZE);
     console.log("Faucet Address: \t",CONFIG.FAUCET_ADDRESS);
@@ -69,3 +85,7 @@ app.listen(port, () => {
         console.log("Asset Id: \t",CONFIG.ASSET_ID);
     }
 });
+
+
+
+export {io}
