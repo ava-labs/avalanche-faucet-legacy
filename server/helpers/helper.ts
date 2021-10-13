@@ -8,11 +8,6 @@ const Web3 = require("web3");
 // [currentIndex] holds the round robin index for the queue to use
 let currentIndex = 0
 
-const queueMap = setupQueuesMap()
-
-// [queueLength] holds the number of queues we have
-const queueLength = queueMap.length
-
 // sendAmount is nAVAX
 export async function sendDrop(address: string, sendAmount: BN){
     let addressChain = getAddressChain(address)
@@ -21,19 +16,23 @@ export async function sendDrop(address: string, sendAmount: BN){
         return txId
     }else if(addressChain === 'C'){
         // select queue to use
-        const queueToUse = await getQueueWithSufficientBalance(currentIndex)
+        let {queueToUse, currentIndex: newCurrentIndex} = await getQueueWithSufficientBalance(currentIndex)
 
-        queueToUse.push({address, sendAmount, currentIndex})
+        queueToUse.push({address, sendAmount, currentIndex: newCurrentIndex})
 
         // reduce ttl after pushing to queue
-        CONFIG_C.KEYS_MAP[currentIndex].ttl -= 1   
+        CONFIG_C.KEYS_MAP[newCurrentIndex].ttl -= 1   
 
         // increment [currentIndex]
-        currentIndex = getValidIndex(currentIndex++, queueLength)
+        currentIndex = getValidIndex(newCurrentIndex++)
+
+        let finalResult
 
         queueToUse.on('task_finish', function (taskId: any, result: any, stats: any) {
-            return result.receipt
+            finalResult = result
         })
+
+        return finalResult
         
     }else{
         throw new Error("Invalid Address")

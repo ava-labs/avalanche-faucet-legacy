@@ -53,14 +53,6 @@ const CONFIG_C = {
   KEYS_MAP: keysMap
 };
 
-// Init web 3 with target AVA Node
-
-
-
-
-// let account = web3.eth.accounts.privateKeyToAccount(PK);
-
-
 async function getGasPrice(): Promise<number>{
     return await web3.eth.getGasPrice()
 }
