@@ -40,7 +40,7 @@ class ApiHelper{
     }
 
 
-    static async token(address: string, captchaResponse: string, index = 0): Promise<string>{
+    static async token(address: string, captchaResponse: string): Promise<string>{
         // Return error if captcha doesnt exist
         if(!captchaResponse){
             throw new Error('Invalid Captcha')
@@ -68,7 +68,7 @@ class ApiHelper{
 
             let amtBN = chain==='X' ? amtX : amxC
 
-            let txID = await sendDrop(address, amtBN, index)
+            let txID = await sendDrop(address, amtBN)
             return txID
         }else{
             throw new Error('Invalid Captcha')

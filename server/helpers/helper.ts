@@ -1,19 +1,40 @@
 // Sends a drop from the faucet to the given address
 import {BN} from "avalanche";
 import {CONFIG_C, sendAvaC} from "../eth";
+import { getQueueWithSufficientBalance, getValidIndex, setupQueuesMap } from "./queueHelper";
 const {CONFIG, avm, bintools} = require('../ava');
 const Web3 = require("web3");
 
+// [currentIndex] holds the round robin index for the queue to use
+let currentIndex = 0
+
+const queueMap = setupQueuesMap()
+
+// [queueLength] holds the number of queues we have
+const queueLength = queueMap.length
 
 // sendAmount is nAVAX
-export async function sendDrop(address: string, sendAmount: BN, index = 0){
+export async function sendDrop(address: string, sendAmount: BN){
     let addressChain = getAddressChain(address)
     if(addressChain === 'X'){
         let txId = await sendDropX(address, sendAmount)
         return txId
     }else if(addressChain === 'C'){
-        let receipt = await sendAvaC(address, sendAmount, index);
-        return receipt.transactionHash
+        // select queue to use
+        const queueToUse = await getQueueWithSufficientBalance(currentIndex)
+
+        queueToUse.push({address, sendAmount, currentIndex})
+
+        // reduce ttl after pushing to queue
+        CONFIG_C.KEYS_MAP[currentIndex].ttl -= 1   
+
+        // increment [currentIndex]
+        currentIndex = getValidIndex(currentIndex++, queueLength)
+
+        queueToUse.on('task_finish', function (taskId: any, result: any, stats: any) {
+            return result.receipt
+        })
+        
     }else{
         throw new Error("Invalid Address")
     }

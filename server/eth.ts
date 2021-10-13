@@ -74,19 +74,6 @@ async function getAdjustedGasPrice(): Promise<number>{
     return Math.min(adjustedGas, MAX_GAS)
 }
 
-async function getAcceptedTxCount(){
-    let json = {
-        jsonrpc: "2.0",
-        method: "eth_getTransactionCount",
-        params: [keysMap[0].account.address, "accepted"],
-        id: 1
-    }
-    let res = await axios.post(rpcUrl, json);
-    let hex = res.data.result;
-    let num = parseInt(hex, 16);
-    return num
-}
-
 // !!! Receiver is given is either 0x or C-0x
 // Amount is given in gWEI
 async function sendAvaC(receiver: string, amount: BN, index: number){
