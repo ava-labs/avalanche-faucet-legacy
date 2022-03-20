@@ -1,15 +1,9 @@
-import {getApiKey, validateKey} from "./db";
-import {AxiosResponse} from "axios";
-import {CONFIG, avm, bintools} from './ava'
-// const {CONFIG, avm, bintools} = require('./ava');
-const axios = require('axios').default;
-const {sendAvaC, CONFIG_C} = require("./eth");
-const Web3 = require("web3");
-import {BN} from 'avalanche'
-import {getAddressChain, sendDrop, sendDropX} from "./helpers/helper";
+
+import {CONFIG} from './ava'
+const { CONFIG_C} = require("./eth");
 import ApiHelper from "./helpers/apiHelper";
-// const AVA = require('./ava');
 var router = require('express').Router();
+
 
 router.get('/howmuch', (req: any, res: any) => {
     res.json({
@@ -30,7 +24,7 @@ router.post('/token_custom', async (req: any, res: any) =>{
     })
 })
 
-router.post('/token', (req: any, res: any) => {
+router.post('/token', async (req: any, res: any) => {
     let address = req.body.address;
     let captchaResponse = req.body["g-recaptcha-response"];
 
@@ -39,6 +33,7 @@ router.post('/token', (req: any, res: any) => {
     }).catch((e: Error) => {
         onError(res, e)
     })
+
 });
 
 function onError(res: any, err: Error){

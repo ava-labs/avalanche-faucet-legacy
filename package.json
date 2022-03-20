@@ -14,6 +14,7 @@
     "@avalabs/vue_components": "^0.6.2",
     "avalanche": "3.2.2",
     "axios": "^0.21.1",
+    "better-queue": "^3.8.10",
     "bn.js": "^4.11.8",
     "body-parser": "^1.19.0",
     "connect-history-api-fallback": "^1.6.0",
@@ -35,13 +36,14 @@
     "vuetify": "^2.2.6",
     "vuetify-loader": "^1.4.3",
     "vuex": "^3.1.2",
-    "web3": "^1.4.0"
+    "web3": "^1.6.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.12.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/vue-fontawesome": "^0.1.9",
+    "@types/better-queue": "^3.8.3",
     "@types/elliptic": "^6.4.12",
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.35",

@@ -182,7 +182,7 @@
                     parent.onresponse({
                         data:{
                             status: 'error',
-                            message: "Request timeout. Please try again later."
+                            message: "Your request is being processed. You'll get your tokens in a couple of minutes"
                         }
                     });
                 });
