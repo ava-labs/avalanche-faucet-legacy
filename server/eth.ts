@@ -1,18 +1,13 @@
-import {parseEvmBechAddress} from "./helpers/helper";
-import {BN} from "avalanche";
+import { parseEvmBechAddress } from "./helpers/helper";
+import { Avalanche, BN } from "avalanche";
 
 const Web3 = require('web3');
-
-// Get constants
-const axios = require('axios');
 
 const PK = process.env.PRIVATE_KEY_C; // The private key that holds the given assets to supply the faucet
 const txAmount = process.env.DROP_SIZE_C || "200000000000000000";
 const AVA_IP = process.env.AVA_IP || "localhost";
 const AVA_PORT = process.env.AVA_PORT || "9650";
 const AVA_PROTOCOL = process.env.AVA_PROTOCOL || "http";
-
-const MAX_GAS = 235000000000;
 
 const CONFIG_C = {
   PK: PK,
@@ -27,80 +22,195 @@ let web3 = new Web3(rpcUrl);
 // Create the web3 account from the faucet private key
 let account = web3.eth.accounts.privateKeyToAccount(PK);
 
-// Get available C-AVA balance
-web3.eth.getBalance(account.address).then((res:any) => {
-    console.log("(C) Available Balance: ", res);
-    console.log("(C) Droplet size: \t",txAmount);
-    console.log(`(C) Address: `,account.address)
-});
+// For estimating max fee and priority fee using CChain APIs
+const avalanche = new Avalanche('api.avax-test.network', 9650, 'https', 43113);
+const cchain = avalanche.CChain();
 
-
-async function getGasPrice(): Promise<number>{
-    return await web3.eth.getGasPrice()
+type WaitArrType = {
+  amount: BN,
+  receiver: string,
+  cb: (transactionHash: string) => void
 }
 
-/**
- * Returns the gas price + 25%, or max gas
- */
-async function getAdjustedGasPrice(): Promise<number>{
-    let gasPrice = await getGasPrice()
-    let adjustedGas = Math.floor(gasPrice * 1.25)
-    return Math.min(adjustedGas, MAX_GAS)
+type Queue = {
+  amount: BN,
+  receiver: string,
+  nonce: number | undefined
 }
 
-async function getAcceptedTxCount(){
-    let json = {
-        jsonrpc: "2.0",
-        method: "eth_getTransactionCount",
-        params: [account.address, "accepted"],
-        id: 1
-    }
-    let res = await axios.post(rpcUrl, json);
-    let hex = res.data.result;
-    let num = parseInt(hex, 16);
-    return num
-}
+let nonceUpdating: Boolean = false;
+let nonceVal: number = -1;
+let balanceUpdating: Boolean = false;
+let balance: BN = new BN(0);
+let balanceWaitArr: WaitArrType[] = [];
+let waitArr: WaitArrType[] = [];
+let queue: Queue[] = [];
+
+let recaliber = false;
+let pendingTxNonces: any = new Set();
+
+// Recaliber nonce and balance every 1 hour if there are no pending tx
+setInterval(() => {
+	if(pendingTxNonces.size === 0 && nonceUpdating === false && balanceUpdating === false) {
+		recaliber = true;
+		waitArr = [];
+		balanceWaitArr = [];
+		console.log("Nonce and balance recalibrated!")
+	}
+}, 60*60*1000)
 
 // !!! Receiver is given is either 0x or C-0x
-// Amount is given in gWEI
-async function sendAvaC(receiver: string, amount: BN){
-    if(receiver[0]==='C'){
-        receiver = parseEvmBechAddress(receiver)
+// Put requests in balance queue after calculating nonce -
+// - Amount is given in gWEi
+// - cb() call back function for returning txHash to caller
+async function sendAvaC(receiver: string, amount: BN, cb: (transactionHash: string) => void) {
+  if (receiver[0] === 'C') {
+    receiver = parseEvmBechAddress(receiver)
+  }
+
+  // converting amount into wei
+  amount = amount.mul(new BN(1e9));
+
+  if (nonceVal === -1 || recaliber === true) {
+    const waitArrIndex = waitArr.length;
+    waitArr.push({ amount, receiver, cb });
+    if (!nonceUpdating) {
+      nonceUpdating = true;
+      nonceVal = await web3.eth.getTransactionCount(account.address, 'latest');
+      nonceUpdating = false;
+    } else {
+      const timeout = setInterval(() => {
+        if (!nonceUpdating) {
+          clearInterval(timeout)
+          putInBalanceQueue(waitArr[waitArrIndex]);
+        }
+      }, 300)
     }
-
-    let gasPrice = await getAdjustedGasPrice()
-
-    // convert nAvax to wei
-    let amountWei = amount.mul(new BN(1000000000))
-    let latestTx = await web3.eth.getTransactionCount(account.address, 'latest');
-
-    const txConfig = {
-        from: account.address,
-        gasPrice: gasPrice,
-        gas: "21000",
-        to: receiver,
-        value: amountWei.toString(),
-        data: "",
-        nonce: latestTx,
-    };
-
-    let signedTx = await account.signTransaction(txConfig);
-    let err, receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
-
-    if(!err) return receipt;
-    console.log(err);
-    throw err;
+  } else {
+    return putInBalanceQueue({ amount, receiver, cb })
+  }
 }
 
+// Put requests in execution queue after calculating faucet balance
+async function putInBalanceQueue({ amount, receiver, cb }: WaitArrType) {
+  if (balance.eq(new BN(0)) || recaliber === true) {
+    const balanceWaitArrIndex = balanceWaitArr.length;
+    balanceWaitArr.push({ amount, receiver, cb });
+    if (!balanceUpdating) {
+      balanceUpdating = true;
+      balance = new BN(await web3.eth.getBalance(account.address));
+      balanceUpdating = false;
+      recaliber = false;
+    } else {
+      const timeout = setInterval(() => {
+        if (!balanceUpdating) {
+          clearInterval(timeout);
+          putInQueue(balanceWaitArr[balanceWaitArrIndex]);
+        }
+      }, 300)
+    }
+  } else {
+    putInQueue({ amount, receiver, cb })
+  }
+}
+
+// Executes queue after checking faucet balance
+async function putInQueue({ amount, receiver, cb }: WaitArrType) {
+  if (balance.gt(amount)) {
+    const nonce = nonceVal;
+    queue.push({ amount, receiver, nonce })
+    nonceVal++;
+    balance = balance.sub(amount);
+    cb(await execQueue());
+  } else {
+    throw "Error: Faucet balance too low!"
+  }
+}
+
+// Executes 1 element from the queue at a time
+async function execQueue() {
+  const q = queue.shift();
+  const amount: any = q?.amount;
+  const receiver: any = q?.receiver;
+  const nonce: any = q?.nonce;
+  return sendAvaCUtil(amount, receiver, undefined, undefined, nonce);
+}
+
+// Function to estimate max fee and max priority fee
+const calcFeeData = async (maxFeePerGas: number | undefined = undefined, maxPriorityFeePerGas: number | undefined = undefined) => {
+  const baseFee = parseInt(await cchain.getBaseFee(), 16) / 1e9;
+  maxPriorityFeePerGas = maxPriorityFeePerGas == undefined ? parseInt(await cchain.getMaxPriorityFeePerGas(), 16) / 1e9 : maxPriorityFeePerGas;
+  maxFeePerGas = maxFeePerGas == undefined ? baseFee + maxPriorityFeePerGas : maxFeePerGas;
+
+  if (maxFeePerGas < maxPriorityFeePerGas) {
+    throw ("Error: Max fee per gas cannot be less than max priority fee per gas");
+  }
+
+  return {
+    maxFeePerGas: maxFeePerGas,
+    maxPriorityFeePerGas: maxPriorityFeePerGas
+  };
+}
+
+// Function to issue sendAVAX transaction: amount in wei
+// - maxFeePerGas and maxPriorityFeePerGas is given in gWei
+const sendAvaCUtil = async (amount: BN, to: string, maxFeePerGas: number | undefined = undefined, maxPriorityFeePerGas: number | undefined = undefined, nonce = undefined): Promise<string> => {
+  console.log(`Tx with nonce ${nonce} initiated...`);
+  pendingTxNonces.add(nonce);
+
+  // If max fee or max priority fee is not provided, then it will automatically calculate using CChain APIs
+  ({ maxFeePerGas, maxPriorityFeePerGas } = await calcFeeData(maxFeePerGas, maxPriorityFeePerGas));
+
+  maxFeePerGas = web3.utils.toWei(maxFeePerGas.toString(), "ether") / 1e9;
+  maxPriorityFeePerGas = web3.utils.toWei(maxPriorityFeePerGas.toString(), "ether") / 1e9;
+
+  // Type 2 transaction is for EIP1559
+  const tx = {
+    type: 2,
+    gas: "21000",
+    nonce,
+    to,
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+    value: amount,
+  };
+
+  try {
+    const signedTx = await account.signTransaction(tx);
+    const txHash = signedTx.transactionHash;
+
+    console.log(`View transaction with nonce ${nonce}: https://testnet.snowtrace.io/tx/${txHash}`);
+
+    // Sending a signed transaction and waiting for its inclusion
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+    const timeout = setInterval(async () => {
+      if(await web3.eth.getTransactionReceipt(txHash) != null) {
+        console.log(`tx with nonce ${nonce} accepted`)
+        pendingTxNonces.delete(nonce);		
+        clearInterval(timeout);
+      }
+    }, 500)
+
+    return txHash;
+  } catch (err) {
+    console.log(err)
+    console.log(`Error with nonce ${nonce}`);
+    console.log(`Resending tx with ${nonce} to same address.`);
+
+    // resending to same address with higher priority fee
+    return sendAvaCUtil(amount, to, undefined, 10, nonce);
+  }
+};
+
 export {
-    sendAvaC,
-    web3,
-    CONFIG_C
+  sendAvaC,
+  web3,
+  CONFIG_C
 }
 
 module.exports = {
-    sendAvaC,
-    web3,
-    CONFIG_C
+  sendAvaC,
+  web3,
+  CONFIG_C
 };

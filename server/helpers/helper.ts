@@ -11,8 +11,9 @@ export async function sendDrop(address: string, sendAmount: BN){
         let txId = await sendDropX(address, sendAmount)
         return txId
     }else if(addressChain === 'C'){
-        let receipt = await sendAvaC(address, sendAmount);
-        return receipt.transactionHash
+        sendAvaC(address, sendAmount, (transactionHash) => {
+            return transactionHash
+        });
     }else{
         throw new Error("Invalid Address")
     }
