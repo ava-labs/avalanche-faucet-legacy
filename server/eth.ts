@@ -47,11 +47,11 @@ let waitArr: WaitArrType[] = [];
 let queue: Queue[] = [];
 
 let recaliber = false;
-let pendingTxNonces: any = [];
+let pendingTxNonces: any = new Set();
 
 // Recaliber nonce and balance every 1 hour if there are no pending tx
 setInterval(() => {
-	if(pendingTxNonces.length === 0 && nonceUpdating === false && balanceUpdating === false) {
+	if(pendingTxNonces.size === 0 && nonceUpdating === false && balanceUpdating === false) {
 		recaliber = true;
 		waitArr = [];
 		balanceWaitArr = [];
@@ -156,7 +156,7 @@ const calcFeeData = async (maxFeePerGas: number | undefined = undefined, maxPrio
 // - maxFeePerGas and maxPriorityFeePerGas is given in gWei
 const sendAvaCUtil = async (amount: BN, to: string, maxFeePerGas: number | undefined = undefined, maxPriorityFeePerGas: number | undefined = undefined, nonce = undefined): Promise<string> => {
   console.log(`Tx with nonce ${nonce} initiated...`);
-  pendingTxNonces.push(nonce);
+  pendingTxNonces.add(nonce);
 
   // If max fee or max priority fee is not provided, then it will automatically calculate using CChain APIs
   ({ maxFeePerGas, maxPriorityFeePerGas } = await calcFeeData(maxFeePerGas, maxPriorityFeePerGas));
@@ -187,7 +187,7 @@ const sendAvaCUtil = async (amount: BN, to: string, maxFeePerGas: number | undef
     const timeout = setInterval(async () => {
       if(await web3.eth.getTransactionReceipt(txHash) != null) {
         console.log(`tx with nonce ${nonce} accepted`)
-        pendingTxNonces.indexOf(nonce) !== -1 && pendingTxNonces.splice(pendingTxNonces.indexOf(nonce), 1);		
+        pendingTxNonces.delete(nonce);		
         clearInterval(timeout);
       }
     }, 500)
